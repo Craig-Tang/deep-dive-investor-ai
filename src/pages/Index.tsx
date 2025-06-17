@@ -53,11 +53,11 @@ const Index: React.FC = () => {
     initialSizes: layoutMode === 'single' ? [100] :
                    layoutMode === 'dual' ? [40, 60] :
                    layoutMode === 'triple' ? [25, 45, 30] :
-                   [20, 30, 25, 25],
+                   [20, 25, 30, 25],
     minSizes: layoutMode === 'single' ? [100] :
               layoutMode === 'dual' ? [20, 30] :
               layoutMode === 'triple' ? [15, 30, 20] :
-              [10, 20, 15, 15]
+              [10, 15, 20, 15]
   });
 
   // 模拟新闻数据
@@ -102,7 +102,6 @@ const Index: React.FC = () => {
 
     setMessages(prev => [...prev, newMessage]);
 
-    // 切换到双栏布局
     if (layoutMode === 'single') {
       setLayoutMode('dual');
     }
@@ -111,13 +110,11 @@ const Index: React.FC = () => {
       setIsDeepResearching(true);
       setResearchProgress(0);
       
-      // 模拟深度研究进度
       const progressInterval = setInterval(() => {
         setResearchProgress(prev => {
           if (prev >= 100) {
             clearInterval(progressInterval);
             setIsDeepResearching(false);
-            // 生成研究报告
             setResearchReport([
               {
                 id: '1',
@@ -138,14 +135,15 @@ const Index: React.FC = () => {
                 type: 'paragraph'
               }
             ]);
-            setLayoutMode('triple');
+            if (layoutMode === 'dual') {
+              setLayoutMode('triple');
+            }
             return 100;
           }
           return prev + 10;
         });
       }, 300);
     } else {
-      // 普通回复
       setTimeout(() => {
         const response: Message = {
           id: (Date.now() + 1).toString(),
@@ -160,8 +158,9 @@ const Index: React.FC = () => {
 
   const handleDragToCanvas = (block: ReportBlock) => {
     setCanvasBlocks(prev => [...prev, { ...block, id: Date.now().toString() }]);
-    // 当有内容拖拽到画布时，自动切换到四栏布局
-    setLayoutMode('quad');
+    if (layoutMode !== 'quad') {
+      setLayoutMode('quad');
+    }
   };
 
   const renderLayout = () => {
@@ -286,7 +285,7 @@ const Index: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 transition-all duration-700 ease-in-out overflow-hidden"
+      className="h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden"
     >
       {renderLayout()}
     </div>
