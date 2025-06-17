@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NewsPanel } from './NewsPanel';
 import { ResponsiveStackedNews } from './ResponsiveStackedNews';
 import { ChatPanel } from './ChatPanel';
 import { ChatMessages } from './ChatMessages';
+import { NewsDetailModal } from './NewsDetailModal';
 import type { NewsItem, Message } from '@/pages/Index';
 
 interface NewsChatLayoutProps {
@@ -56,21 +57,45 @@ export const NewsChatLayout: React.FC<NewsChatLayoutProps> = ({
   const newsStyle = { flexBasis: `${newsRatio * 100}%` };
   const chatStyle = { flexBasis: `${(1 - newsRatio) * 100}%` };
   
+  // 新闻详情弹窗状态
+  const [selectedNewsDetail, setSelectedNewsDetail] = useState<NewsItem | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  
+  // 包装发送消息函数，自动清除关键词选择
+  const handleSendMessage = (content: string, isDeepResearch?: boolean) => {
+    onSendMessage(content, isDeepResearch);
+    // 发送消息后自动清除关键词选择
+    if (selectedKeywords.length > 0) {
+      onClearKeywords();
+    }
+  };
+  
+  // 处理新闻详情查看
+  const handleNewsDetailSelect = (news: NewsItem) => {
+    setSelectedNewsDetail(news);
+    setIsDetailModalOpen(true);
+  };
+  
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedNewsDetail(null);
+  };
+  
   return (
     <div className="flex flex-col h-full">      {/* 新闻区域 */}
-      <div style={newsStyle} className="min-h-0 overflow-auto border-b">        {newsMode === 'stacked' ? (
+      <div style={newsStyle} className="min-h-0 overflow-auto border-b pb-4">        {newsMode === 'stacked' ? (
           <ResponsiveStackedNews 
             news={news} 
             selectedKeywords={selectedKeywords}
             onKeywordToggle={onKeywordToggle}
-            onNewsSelect={onNewsSelect}
+            onNewsSelect={handleNewsDetailSelect}
             maxKeywords={maxKeywords}
             width={panelWidth}
           />
         ) : (
           <NewsPanel 
             news={news} 
-            onNewsSelect={onNewsSelect}
+            onNewsSelect={handleNewsDetailSelect}
             selectedNews={selectedNews}
             mode={newsMode}
             selectedKeywords={selectedKeywords}
@@ -91,20 +116,27 @@ export const NewsChatLayout: React.FC<NewsChatLayoutProps> = ({
         
         {/* 悬浮输入框 */}
         <div className="absolute bottom-3 left-6 right-6 z-10">
-          <div className="max-w-2xl mx-auto">
-            <ChatPanel 
+          <div className="max-w-2xl mx-auto">            <ChatPanel 
               messages={[]}
-              onSendMessage={onSendMessage}
+              onSendMessage={handleSendMessage}
               isDeepResearching={isDeepResearching}
               researchProgress={researchProgress}
               mode="input-only"
               selectedKeywords={selectedKeywords}
               suggestedQuestions={suggestedQuestions}
               onClearKeywords={onClearKeywords}
-            />
-          </div>
+            />          </div>
         </div>
       </div>
+      
+      {/* 新闻详情弹窗 */}
+      <NewsDetailModal
+        item={selectedNewsDetail}
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetailModal}
+        selectedKeywords={selectedKeywords}
+        onKeywordToggle={onKeywordToggle}
+      />
     </div>
   );
 };

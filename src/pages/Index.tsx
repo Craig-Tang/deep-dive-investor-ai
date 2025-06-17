@@ -9,6 +9,7 @@ import { ResizableHandle } from '@/components/ResizableHandle';
 import { GeminiLoader } from '@/components/GeminiLoader';
 import { StackedNewsHome } from '@/components/StackedNewsHome';
 import { HistoryPanel } from '@/components/HistoryPanel';
+import { NewsDetailModal } from '@/components/NewsDetailModal';
 import { useResizable } from '@/hooks/useResizable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -61,12 +62,16 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
   const [canvasBlocks, setCanvasBlocks] = useState<ReportBlock[]>([]);
   const [isDeepResearching, setIsDeepResearching] = useState(false);
   const [researchProgress, setResearchProgress] = useState(0);
-  const [showCanvas, setShowCanvas] = useState(false);
-  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
+  const [showCanvas, setShowCanvas] = useState(false);  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
   const [historyPanelType, setHistoryPanelType] = useState<'report' | 'canvas'>('report');
   // 可调整宽度的面板引用
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
+  
+  // 新闻详情弹窗状态
+  const [selectedNewsDetail, setSelectedNewsDetail] = useState<NewsItem | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   
   // 两面板模式：左侧和中间面板的尺寸控制（没有画布时）
@@ -231,7 +236,6 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
     // 导出markdown功能在CanvasPanel中实现
     console.log('导出Markdown功能');
   };
-
   const handleSendMessage = async (content: string, isDeepResearch: boolean = false) => {
     const newMessage: Message = {
       id: Date.now().toString(),
@@ -241,7 +245,12 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, newMessage]);    if (isDeepResearch) {
+    setMessages(prev => [...prev, newMessage]);
+    
+    // 发送消息后自动清除关键词选择
+    if (selectedKeywords.length > 0) {
+      handleClearKeywords();
+    }if (isDeepResearch) {
       // 如果当前是home模式，先切换到chat模式进行加载
       if (layoutMode === 'home') {
         setLayoutMode('chat');
@@ -529,8 +538,18 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
       setCanvasBlocks(item.data);
       setShowCanvas(true);
       setLayoutMode('research');
-    }
-    setShowHistoryPanel(false);
+    }    setShowHistoryPanel(false);
+  };
+
+  // 处理新闻详情查看
+  const handleNewsDetailSelect = (news: NewsItem) => {
+    setSelectedNewsDetail(news);
+    setIsDetailModalOpen(true);
+  };
+  
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedNewsDetail(null);
   };
 
   // 首页布局
@@ -562,12 +581,11 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
         
         {/* 新闻卡片主界面 - 三列叠层卡片模式 */}
         <div className="h-full pb-32 overflow-auto">
-          <div className="p-6 max-w-7xl mx-auto">
-            <StackedNewsHome 
+          <div className="p-6 max-w-7xl mx-auto">            <StackedNewsHome 
               news={mockNews} 
               selectedKeywords={selectedKeywords}
               onKeywordToggle={handleKeywordToggle}
-              onNewsSelect={setSelectedNews}
+              onNewsSelect={handleNewsDetailSelect}
               maxKeywords={4}
             />
           </div>
@@ -582,17 +600,26 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
               mode="input-only"
               selectedKeywords={selectedKeywords}
               suggestedQuestions={suggestedQuestions}
-              onClearKeywords={handleClearKeywords}
-            />
+              onClearKeywords={handleClearKeywords}            />
           </div>
         </div>
+        
+        {/* 新闻详情弹窗 */}
+        <NewsDetailModal
+          item={selectedNewsDetail}
+          isOpen={isDetailModalOpen}
+          onClose={handleCloseDetailModal}
+          selectedKeywords={selectedKeywords}
+          onKeywordToggle={handleKeywordToggle}
+        />
       </div>
     );
   }
   // 普通聊天模式
   if (layoutMode === 'chat') {
     return (
-      <div className="h-screen w-full bg-background overflow-hidden relative">        {/* 顶部返回按钮和工具栏 */}
+      <div className="h-screen w-full bg-background overflow-hidden relative">
+        {/* 顶部返回按钮和工具栏 */}
         <div className="h-16 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between px-4 flex-shrink-0">
           <Button 
             variant="ghost" 
@@ -612,19 +639,17 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
               研究报告
             </Button>
             <Button 
-              variant="outline" 
-              onClick={() => {
-                setLayoutMode('research');
-                setShowCanvas(true);
-              }}
+              variant={showCanvas ? 'default' : 'outline'} 
+              onClick={handleCanvasToggle}
               className="flex items-center gap-2"
             >
               <Palette className="w-4 h-4" />
               画布
             </Button>
           </div>
-        </div>{/* 新闻-聊天组合布局 */}
-        <div style={{height: 'calc(100vh - 4rem)'}}>          <NewsChatLayout
+        </div>        {/* 新闻-聊天组合布局 */}
+        <div style={{height: 'calc(100vh - 4rem)'}}>
+          <NewsChatLayout
             news={mockNews}
             onNewsSelect={setSelectedNews}
             selectedNews={selectedNews}
@@ -638,7 +663,7 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
             researchProgress={researchProgress}
             suggestedQuestions={suggestedQuestions}
             onClearKeywords={handleClearKeywords}
-            newsRatio={0.65} // Chat模式下给新闻区域更多空间以显示三栏布局
+            newsRatio={0.45} // Chat模式下适中的新闻区域高度，给底部留出margin
             chatPlaceholder={{
               title: "开始对话",
               subtitle: "输入您的AI投资问题，获得专业分析"
@@ -661,11 +686,10 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
           onClick={handleBackToHome}
         >
           ← 返回首页
-        </Button>
-          <div className="flex gap-2">
+        </Button>        <div className="flex gap-2">
           <Button 
             variant={layoutMode === 'research' ? 'default' : 'outline'} 
-            onClick={() => setLayoutMode('research')}
+            onClick={() => setLayoutMode(layoutMode === 'research' ? 'chat' : 'research')}
             className="flex items-center gap-2"
           >
             <MessageSquare className="w-4 h-4" />
@@ -696,7 +720,7 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
             researchProgress={researchProgress}
             suggestedQuestions={suggestedQuestions}
             onClearKeywords={handleClearKeywords}
-            newsRatio={0.5} // 研究模式下给新闻区域适中的空间
+            newsRatio={0.45} // 研究模式下适中的新闻区域高度，给底部留出margin
             panelWidth={showCanvas ? threePanelSizes[0] : twoPanelSizes[0]}
           />
         </div><ResizableHandle onMouseDown={(e) => showCanvas ? handleThreePanelMouseDown(e, 0) : handleTwoPanelMouseDown(e, 0)} />        {/* 中间：研究报告 */}
@@ -728,9 +752,17 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
             type={historyPanelType}
             onSelect={handleHistorySelect}
             onClose={() => setShowHistoryPanel(false)}
-          />
-        </div>
+          />        </div>
       )}
+      
+      {/* 新闻详情弹窗 */}
+      <NewsDetailModal
+        item={selectedNewsDetail}
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetailModal}
+        selectedKeywords={selectedKeywords}
+        onKeywordToggle={handleKeywordToggle}
+      />
     </div>
   );
 };
