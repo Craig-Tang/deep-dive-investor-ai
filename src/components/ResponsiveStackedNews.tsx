@@ -63,11 +63,10 @@ export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
       technology: technologyNews,
       application: applicationNews
     };
-  }, [news, layoutMode]);
-  // 三列模式
+  }, [news, layoutMode]);  // 三列模式
   if (layoutMode === 'three-column') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full px-2 md:px-4">
         <div className="flex flex-col">
           <StackedNewsCards
             news={categorizedNews.investment}
@@ -104,7 +103,6 @@ export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
       </div>
     );
   }
-
   // 两列模式
   if (layoutMode === 'two-column') {
     const halfIndex = Math.ceil(news.length / 2);
@@ -112,7 +110,7 @@ export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
     const secondHalf = news.slice(halfIndex);
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full px-2 md:px-4">
         <div className="flex flex-col">
           <StackedNewsCards
             news={firstHalf}
@@ -138,10 +136,9 @@ export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
       </div>
     );
   }
-
   // 单列模式
   return (
-    <div className="h-full">
+    <div className="h-full px-2 md:px-4">
       <StackedNewsCards
         news={news}
         selectedKeywords={selectedKeywords}

@@ -496,8 +496,11 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
   const handleDragToCanvas = (block: ReportBlock) => {
     setCanvasBlocks(prev => [...prev, { ...block, id: Date.now().toString() }]);
   };
-
   const handleCanvasToggle = () => {
+    // 如果不在研究模式，先切换到研究模式
+    if (layoutMode !== 'research') {
+      setLayoutMode('research');
+    }
     setShowCanvas(!showCanvas);
   };
 
@@ -659,18 +662,23 @@ const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<La
         >
           ← 返回首页
         </Button>
-        
-        <div className="flex gap-2">
-          {layoutMode === 'research' && researchReport && (
-            <Button 
-              variant="outline" 
-              onClick={handleCanvasToggle}
-              className="flex items-center gap-2"
-            >
-              <Palette className="w-4 h-4" />
-              画布
-            </Button>
-          )}
+          <div className="flex gap-2">
+          <Button 
+            variant={layoutMode === 'research' ? 'default' : 'outline'} 
+            onClick={() => setLayoutMode('research')}
+            className="flex items-center gap-2"
+          >
+            <MessageSquare className="w-4 h-4" />
+            研究报告
+          </Button>
+          <Button 
+            variant={showCanvas ? 'default' : 'outline'} 
+            onClick={handleCanvasToggle}
+            className="flex items-center gap-2"
+          >
+            <Palette className="w-4 h-4" />
+            画布
+          </Button>
         </div>
       </div>      {/* 主内容区域 */}
       <div className="flex h-[calc(100vh-4rem)] relative">        {/* 左侧：新闻 + 聊天 */}
