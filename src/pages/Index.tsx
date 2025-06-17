@@ -52,18 +52,27 @@ const Index: React.FC = () => {
   const [canvasBlocks, setCanvasBlocks] = useState<ReportBlock[]>([]);
   const [isDeepResearching, setIsDeepResearching] = useState(false);
   const [researchProgress, setResearchProgress] = useState(0);
-  const [showCanvas, setShowCanvas] = useState(false);
-
-  // 可调整宽度的面板引用
+  const [showCanvas, setShowCanvas] = useState(false);  // 可调整宽度的面板引用
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // 两面板模式：左侧和中间面板的尺寸控制（没有画布时）
   const {
-    sizes: panelSizes,
-    handleMouseDown,
-    resetSizes
+    sizes: twoPanelSizes,
+    handleMouseDown: handleTwoPanelMouseDown,
   } = useResizable({
     containerRef,
-    initialSizes: showCanvas ? [50, 25, 25] : [60, 40],
-    minSizes: showCanvas ? [30, 20, 20] : [40, 30]
+    initialSizes: [60, 40], // 左侧60%，中间40%
+    minSizes: [40, 30]
+  });
+
+  // 三面板模式：所有面板的尺寸控制（有画布时）
+  const {
+    sizes: threePanelSizes,
+    handleMouseDown: handleThreePanelMouseDown,
+  } = useResizable({
+    containerRef,
+    initialSizes: [50, 25, 25], // 左侧50%，中间25%，右侧25%
+    minSizes: [30, 20, 20]
   });
   // 模拟新闻数据
   const mockNews: NewsItem[] = [
@@ -410,9 +419,8 @@ const Index: React.FC = () => {
           )}
         </div>
       </div>      {/* 主内容区域 */}
-      <div className="flex h-[calc(100vh-4rem)] relative">
-        {/* 左侧：新闻 + 聊天 */}
-        <div style={{ width: showCanvas ? `${panelSizes[0]}%` : `${panelSizes[0]}%` }} className="h-full flex flex-col relative">
+      <div className="flex h-[calc(100vh-4rem)] relative">        {/* 左侧：新闻 + 聊天 */}
+        <div style={{ width: showCanvas ? `${threePanelSizes[0]}%` : `${twoPanelSizes[0]}%` }} className="h-full flex flex-col relative">
           {/* 新闻区域和聊天区域 4/6 分栏 */}
           <div className="flex flex-col h-full">
             <div className="basis-2/5 min-h-0 overflow-auto border-b">
@@ -485,23 +493,19 @@ const Index: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
+        </div>        <ResizableHandle onMouseDown={(e) => showCanvas ? handleThreePanelMouseDown(e, 0) : handleTwoPanelMouseDown(e, 0)} />
 
         {/* 中间：研究报告 */}
-        <div style={{ width: showCanvas ? `${panelSizes[1]}%` : `${panelSizes[1]}%` }} className="h-full">
+        <div style={{ width: showCanvas ? `${threePanelSizes[1]}%` : `${twoPanelSizes[1]}%` }} className="h-full">
           <ResearchPanel 
             report={researchReport}
             onDragToCanvas={handleDragToCanvas}
           />
-        </div>
-
-        {/* 右侧：画布（可选） */}
+        </div>        {/* 右侧：画布（可选） */}
         {showCanvas && (
           <>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
-            <div style={{ width: `${panelSizes[2]}%` }} className="h-full w-full">
+            <ResizableHandle onMouseDown={(e) => handleThreePanelMouseDown(e, 1)} />
+            <div style={{ width: `${threePanelSizes[2]}%` }} className="h-full w-full">
               <CanvasPanel 
                 blocks={canvasBlocks}
                 onBlocksChange={setCanvasBlocks}
