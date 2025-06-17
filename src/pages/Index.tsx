@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { NewsPanel } from '@/components/NewsPanel';
 import { ChatPanel } from '@/components/ChatPanel';
@@ -54,11 +53,11 @@ const Index: React.FC = () => {
     initialSizes: layoutMode === 'single' ? [100] :
                    layoutMode === 'dual' ? [40, 60] :
                    layoutMode === 'triple' ? [25, 45, 30] :
-                   [20, 30, 30, 20],
+                   [20, 30, 25, 25],
     minSizes: layoutMode === 'single' ? [100] :
               layoutMode === 'dual' ? [20, 30] :
               layoutMode === 'triple' ? [15, 30, 20] :
-              [10, 20, 20, 15]
+              [10, 20, 15, 15]
   });
 
   // 模拟新闻数据
@@ -161,9 +160,8 @@ const Index: React.FC = () => {
 
   const handleDragToCanvas = (block: ReportBlock) => {
     setCanvasBlocks(prev => [...prev, { ...block, id: Date.now().toString() }]);
-    if (layoutMode === 'triple') {
-      setLayoutMode('quad');
-    }
+    // 当有内容拖拽到画布时，自动切换到四栏布局
+    setLayoutMode('quad');
   };
 
   const renderLayout = () => {
