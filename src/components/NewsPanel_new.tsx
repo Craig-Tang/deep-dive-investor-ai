@@ -36,12 +36,13 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
       />
     );
   };
+
   return (
     <div className="w-full">
       {/* 首页特殊布局 - 今日投资要闻总览 */}
       {mode === 'cards' && (
-        <div className="mb-6">
-          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-border/50 rounded-lg p-4 mb-4">
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-border/50 rounded-lg p-4 mb-6">
             <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
               📊 今日投资要闻总览
             </h2>
@@ -57,7 +58,7 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
       {/* 新闻列表 */}
       <div className={`${
         mode === 'cards' 
-          ? 'grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto' 
+          ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' 
           : 'space-y-0'
       }`}>
         {news.map(renderNewsCard)}
