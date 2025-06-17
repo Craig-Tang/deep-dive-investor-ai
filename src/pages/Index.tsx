@@ -4,6 +4,7 @@ import { ChatPanel } from '@/components/ChatPanel';
 import { ResearchPanel } from '@/components/ResearchPanel';
 import { CanvasPanel } from '@/components/CanvasPanel';
 import { ResizableHandle } from '@/components/ResizableHandle';
+import { GeminiLoader } from '@/components/GeminiLoader';
 import { useResizable } from '@/hooks/useResizable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,6 +18,8 @@ export interface Message {
   type: 'user' | 'assistant';
   isDeepResearch?: boolean;
   timestamp: Date;
+  isLoading?: boolean;
+  loadingProgress?: number;
 }
 
 export interface NewsItem {
@@ -138,8 +141,7 @@ const Index: React.FC = () => {
       impact: 'medium',
       readTime: 3
     }
-  ];
-  const handleSendMessage = async (content: string, isDeepResearch: boolean = false) => {
+  ];  const handleSendMessage = async (content: string, isDeepResearch: boolean = false) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content,
@@ -148,18 +150,63 @@ const Index: React.FC = () => {
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, newMessage]);
-
-    if (isDeepResearch) {
-      setLayoutMode('research');
+    setMessages(prev => [...prev, newMessage]);    if (isDeepResearch) {
+      // 如果当前是home模式，先切换到chat模式进行加载
+      if (layoutMode === 'home') {
+        setLayoutMode('chat');
+      }
+      // 不立即切换到research模式，等加载完成后再切换
+      
       setIsDeepResearching(true);
       setResearchProgress(0);
       
+      // 立即添加一个加载中的AI消息
+      const loadingMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: '',
+        type: 'assistant',
+        isDeepResearch: true,
+        timestamp: new Date(),
+        isLoading: true,
+        loadingProgress: 0
+      };
+      
+      setMessages(prev => [...prev, loadingMessage]);
+      
       const progressInterval = setInterval(() => {
         setResearchProgress(prev => {
-          if (prev >= 100) {
+          const newProgress = prev + 10;
+          
+          // 更新加载消息的进度
+          setMessages(prevMessages => 
+            prevMessages.map(msg => 
+              msg.id === loadingMessage.id 
+                ? { ...msg, loadingProgress: newProgress }
+                : msg
+            )
+          );
+          
+          if (newProgress >= 100) {
             clearInterval(progressInterval);
             setIsDeepResearching(false);
+            
+            // 加载完成后切换到research模式
+            setLayoutMode('research');
+            
+            // 替换加载消息为实际内容
+            setMessages(prevMessages => 
+              prevMessages.map(msg => 
+                msg.id === loadingMessage.id 
+                  ? { 
+                      ...msg, 
+                      content: '基于深度分析，我为您整理了以下投资研究报告。当前市场呈现出明显的结构性分化特征，科技股领涨大盘，投资者情绪整体偏向乐观。建议重点关注AI相关产业链和新能源汽车板块的投资机会。',
+                      isLoading: false,
+                      loadingProgress: undefined
+                    }
+                  : msg
+              )
+            );
+            
             setResearchReport([
               {
                 id: '1',
@@ -182,7 +229,7 @@ const Index: React.FC = () => {
             ]);
             return 100;
           }
-          return prev + 10;
+          return newProgress;
         });
       }, 300);
     } else {
@@ -292,19 +339,24 @@ const Index: React.FC = () => {
                             : 'bg-muted text-muted-foreground'
                         }`}>
                           {message.type === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                        </div>
-                        <Card className={`${
+                        </div>                        <Card className={`${
                           message.type === 'user' 
                             ? 'bg-primary text-primary-foreground border-primary' 
                             : 'bg-card border-border'
                         } shadow-sm`}>
                           <CardContent className="p-3">
-                            <p className="text-base leading-relaxed">{message.content}</p>
-                            {message.isDeepResearch && (
-                              <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
-                                <Sparkles className="w-3 h-3" />
-                                <span>智研</span>
-                              </div>
+                            {message.isLoading ? (
+                              <GeminiLoader progress={message.loadingProgress} />
+                            ) : (
+                              <>
+                                <p className="text-base leading-relaxed">{message.content}</p>
+                                {message.isDeepResearch && (
+                                  <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
+                                    <Sparkles className="w-3 h-3" />
+                                    <span>智研</span>
+                                  </div>
+                                )}
+                              </>
                             )}
                           </CardContent>
                         </Card>
@@ -393,19 +445,24 @@ const Index: React.FC = () => {
                               : 'bg-muted text-muted-foreground'
                           }`}>
                             {message.type === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
-                          </div>
-                          <Card className={`${
+                          </div>                          <Card className={`${
                             message.type === 'user' 
                               ? 'bg-primary text-primary-foreground border-primary' 
                               : 'bg-card border-border'
                           } shadow-sm`}>
                             <CardContent className="p-3">
-                              <p className="text-base leading-relaxed">{message.content}</p>
-                              {message.isDeepResearch && (
-                                <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
-                                  <Sparkles className="w-3 h-3" />
-                                  <span>智研</span>
-                                </div>
+                              {message.isLoading ? (
+                                <GeminiLoader progress={message.loadingProgress} />
+                              ) : (
+                                <>
+                                  <p className="text-base leading-relaxed">{message.content}</p>
+                                  {message.isDeepResearch && (
+                                    <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
+                                      <Sparkles className="w-3 h-3" />
+                                      <span>智研</span>
+                                    </div>
+                                  )}
+                                </>
                               )}
                             </CardContent>
                           </Card>

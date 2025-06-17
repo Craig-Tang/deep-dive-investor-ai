@@ -332,7 +332,7 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
                   </Badge>
                 )}
               </div>
-              <Badge className={`text-xs px-2 py-1 border ${getImpactColor(selectedNews?.impact || 'low')}`}>
+              <Badge className={`text-xs px-2 py-1 border mr-5 ${getImpactColor(selectedNews?.impact || 'low')}`}>
                 {selectedNews?.impact === 'high' ? '高' : selectedNews?.impact === 'medium' ? '中' : '低'}影响
               </Badge>
             </div>
