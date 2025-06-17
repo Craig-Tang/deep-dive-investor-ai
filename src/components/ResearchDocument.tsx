@@ -25,7 +25,9 @@ interface ResearchDocumentProps {
 }
 
 const ResearchDocument: React.FC<ResearchDocumentProps> = ({ report, onDragToCanvas }) => {
-  const [draggedBlock, setDraggedBlock] = useState<string | null>(null);  const handleDragStart = (e: React.DragEvent, block: ReportBlock) => {
+  const [draggedBlock, setDraggedBlock] = useState<string | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, block: ReportBlock) => {
     console.log('Drag started for block:', block.title);
     setDraggedBlock(block.id);
     e.dataTransfer.setData('application/json', JSON.stringify(block));
@@ -65,31 +67,33 @@ const ResearchDocument: React.FC<ResearchDocumentProps> = ({ report, onDragToCan
       </div>
     );
   }
-
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
       <div className="p-6 max-w-4xl mx-auto space-y-6">
         {/* 报告标题 */}
-        <div className="text-center space-y-2 pb-6 border-b">
+        <div className="text-center space-y-2 pb-6 border-b animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-100">
           <h1 className="text-3xl font-bold text-foreground">AI投资深度研究报告</h1>
           <p className="text-muted-foreground">基于最新市场数据和行业洞察的综合分析</p>
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <Calendar className="w-4 h-4" />
             <span>{new Date().toLocaleDateString('zh-CN')}</span>
           </div>
-        </div>
-
-        {/* 报告内容 */}
+        </div>        {/* 报告内容 */}
         <div className="space-y-8">
           {report.map((block, index) => (
             <Card 
               key={block.id}
-              className={`group transition-all duration-200 hover:shadow-md ${
+              className={`group transition-all duration-200 hover:shadow-md animate-in fade-in-0 slide-in-from-left-4 ${
                 draggedBlock === block.id ? 'opacity-50 scale-95' : ''
               }`}
+              style={{
+                animationDelay: `${200 + index * 150}ms`,
+                animationDuration: '600ms'
+              }}
             >
               <CardHeader className="pb-4">
-                <div className="flex items-start gap-3">                  {/* 拖拽手柄 */}
+                <div className="flex items-start gap-3">
+                  {/* 拖拽手柄 */}
                   <div
                     className="flex items-center gap-1 cursor-grab active:cursor-grabbing opacity-60 hover:opacity-100 transition-opacity px-1 py-2 rounded hover:bg-muted/50"
                     draggable
@@ -106,8 +110,6 @@ const ResearchDocument: React.FC<ResearchDocumentProps> = ({ report, onDragToCan
                       <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
-                      <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
                       <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
                       <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
                       <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
@@ -199,10 +201,8 @@ const ResearchDocument: React.FC<ResearchDocumentProps> = ({ report, onDragToCan
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        {/* 报告结尾 */}
-        <div className="text-center py-8 border-t text-sm text-muted-foreground">
+        </div>        {/* 报告结尾 */}
+        <div className="text-center py-8 border-t text-sm text-muted-foreground animate-in fade-in-0 slide-in-from-bottom-2 duration-500 delay-1000">
           <p>本报告由AI投资研究助手生成，仅供参考，不构成投资建议</p>
           <p className="mt-1">最后更新: {new Date().toLocaleString('zh-CN')}</p>
         </div>

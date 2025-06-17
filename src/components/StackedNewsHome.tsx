@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StackedNewsCards } from './StackedNewsCards';
 import { AISummary } from './AISummary';
+import { categorizeNews } from '@/lib/newsUtils';
 import type { NewsItem } from '@/pages/Index';
 
 interface StackedNewsHomeProps {
@@ -17,42 +18,9 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
   onKeywordToggle,
   onNewsSelect,
   maxKeywords = 4
-}) => {
-  
+}) => {  
   // 新闻分类逻辑
-  const categorizedNews = useMemo(() => {
-    // AI公司投创：包括融资、IPO、投资基金等
-    const investmentNews = news.filter(item => 
-      ['AI融资', '风险投资', 'IPO上市'].includes(item.category) ||
-      item.keywords.some(keyword => 
-        ['融资', '投资', 'IPO', '上市', '基金', '估值', '红杉', 'VC'].includes(keyword)
-      )
-    );
-
-    // AI技术突破：包括新模型、技术创新、算法突破等
-    const technologyNews = news.filter(item => 
-      ['AI技术', 'AI基础设施'].includes(item.category) ||
-      item.keywords.some(keyword => 
-        ['Claude', 'GPT', '大模型', 'AGI', 'H200', '算力', '英伟达', 'AI芯片'].includes(keyword)
-      )
-    );
-
-    // AI应用论文：包括行业应用、监管政策、市场分析等
-    const applicationNews = news.filter(item => 
-      ['AI监管', 'AI应用', '行业分析'].includes(item.category) ||
-      item.keywords.some(keyword => 
-        ['监管', '合规', '法案', '政策', '应用', '行业', '市场'].includes(keyword)
-      ) ||
-      // 如果不属于前两类，则归入应用类
-      (!investmentNews.includes(item) && !technologyNews.includes(item))
-    );
-
-    return {
-      investment: investmentNews,
-      technology: technologyNews,
-      application: applicationNews
-    };
-  }, [news]);  return (
+  const categorizedNews = useMemo(() => categorizeNews(news), [news]);return (
     <div className="space-y-6">
       {/* AI总结 */}
       <AISummary />

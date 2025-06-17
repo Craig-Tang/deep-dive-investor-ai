@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Clock, TrendingUp, ArrowUpRight, Calendar, Timer } from 'lucide-react';
+import { formatTimeAgo, getImpactColor, getCategoryColor, getImpactText } from '@/lib/newsUtils';
 import type { NewsItem } from '@/pages/Index';
 
 interface StackedNewsCardsProps {
@@ -28,46 +29,8 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);  const containerRef = useRef<HTMLDivElement>(null);
   const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes}分钟前`;
-    } else if (diffInMinutes < 1440) {
-      return `${Math.floor(diffInMinutes / 60)}小时前`;
-    } else {
-      return `${Math.floor(diffInMinutes / 1440)}天前`;
-    }
-  };
-
-  const getImpactColor = (impact: NewsItem['impact']) => {
-    switch (impact) {
-      case 'high':
-        return 'text-red-500 bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800';
-      case 'medium':
-        return 'text-orange-500 bg-orange-50 border-orange-200 dark:bg-orange-950 dark:border-orange-800';
-      case 'low':
-        return 'text-green-500 bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800';
-      default:
-        return 'text-muted-foreground bg-muted border-border';
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    const categoryColors: { [key: string]: string } = {
-      'AI融资': 'text-blue-600 bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800',
-      'AI技术': 'text-purple-600 bg-purple-50 border-purple-200 dark:bg-purple-950 dark:border-purple-800',
-      '风险投资': 'text-green-600 bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800',
-      'AI基础设施': 'text-orange-600 bg-orange-50 border-orange-200 dark:bg-orange-950 dark:border-orange-800',
-      'IPO上市': 'text-indigo-600 bg-indigo-50 border-indigo-200 dark:bg-indigo-950 dark:border-indigo-800',
-    };
-    return categoryColors[category] || 'text-muted-foreground bg-muted border-border';
-  };
 
   const nextCard = () => {
     setCurrentIndex((prev) => (prev + 1) % news.length);
@@ -259,9 +222,8 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
                       <Badge variant="secondary" className="text-xs px-1.5 py-0.5 text-red-500">
                         <TrendingUp className="w-3 h-3" />
                       </Badge>
-                    )}
-                    <Badge className={`text-xs px-1.5 py-0.5 border ${getImpactColor(item.impact)}`}>
-                      {item.impact === 'high' ? '高' : item.impact === 'medium' ? '中' : '低'}
+                    )}                    <Badge className={`text-xs px-1.5 py-0.5 border ${getImpactColor(item.impact)}`}>
+                      {getImpactText(item.impact)}
                     </Badge>
                   </div>
                   {isActive && (
