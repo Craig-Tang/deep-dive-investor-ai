@@ -123,13 +123,19 @@ const Index: React.FC = () => {
               {
                 id: '1',
                 title: '市场概况',
-                content: '当前市场呈现出明显的结构性分化特征，科技股领涨大盘...',
+                content: '当前市场呈现出明显的结构性分化特征，科技股领涨大盘，投资者情绪整体偏向乐观。美联储降息预期的升温为市场提供了流动性支撑...',
                 type: 'summary'
               },
               {
                 id: '2',
+                title: '技术分析',
+                content: '从技术指标来看，纳斯达克指数已突破关键阻力位，MACD指标显示多头趋势强劲。成交量放大配合价格上涨，显示市场参与度较高...',
+                type: 'chart'
+              },
+              {
+                id: '3',
                 title: '投资建议',
-                content: '基于当前市场环境，建议重点关注AI相关产业链...',
+                content: '基于当前市场环境，建议重点关注AI相关产业链，特别是芯片设计和数据中心领域。同时关注新能源汽车板块的结构性机会...',
                 type: 'paragraph'
               }
             ]);
@@ -144,7 +150,7 @@ const Index: React.FC = () => {
       setTimeout(() => {
         const response: Message = {
           id: (Date.now() + 1).toString(),
-          content: '这是一个模拟的AI回复...',
+          content: '基于当前市场情况，我建议关注以下几个方面：1. 科技股在降息预期下的表现 2. AI芯片行业的长期增长潜力 3. 新能源汽车市场的发展趋势...',
           type: 'assistant',
           timestamp: new Date()
         };
@@ -183,8 +189,8 @@ const Index: React.FC = () => {
       
       case 'dual':
         return (
-          <div className="flex h-full">
-            <div style={{ width: `${panelSizes[0]}%` }}>
+          <div className="flex h-full w-full">
+            <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
               <NewsPanel 
                 news={mockNews} 
                 onNewsSelect={setSelectedNews}
@@ -193,7 +199,7 @@ const Index: React.FC = () => {
               />
             </div>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
-            <div style={{ width: `${panelSizes[1]}%` }}>
+            <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
               <ChatPanel 
                 messages={messages}
                 onSendMessage={handleSendMessage}
@@ -207,8 +213,8 @@ const Index: React.FC = () => {
       
       case 'triple':
         return (
-          <div className="flex h-full">
-            <div style={{ width: `${panelSizes[0]}%` }}>
+          <div className="flex h-full w-full">
+            <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
               <NewsPanel 
                 news={mockNews} 
                 onNewsSelect={setSelectedNews}
@@ -217,7 +223,7 @@ const Index: React.FC = () => {
               />
             </div>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
-            <div style={{ width: `${panelSizes[1]}%` }}>
+            <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
               <ChatPanel 
                 messages={messages}
                 onSendMessage={handleSendMessage}
@@ -227,7 +233,7 @@ const Index: React.FC = () => {
               />
             </div>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
-            <div style={{ width: `${panelSizes[2]}%` }}>
+            <div style={{ width: `${panelSizes[2]}%` }} className="h-full">
               <ResearchPanel 
                 report={researchReport}
                 onDragToCanvas={handleDragToCanvas}
@@ -238,8 +244,8 @@ const Index: React.FC = () => {
       
       case 'quad':
         return (
-          <div className="flex h-full">
-            <div style={{ width: `${panelSizes[0]}%` }}>
+          <div className="flex h-full w-full">
+            <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
               <NewsPanel 
                 news={mockNews} 
                 onNewsSelect={setSelectedNews}
@@ -248,7 +254,7 @@ const Index: React.FC = () => {
               />
             </div>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
-            <div style={{ width: `${panelSizes[1]}%` }}>
+            <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
               <ChatPanel 
                 messages={messages}
                 onSendMessage={handleSendMessage}
@@ -258,14 +264,14 @@ const Index: React.FC = () => {
               />
             </div>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
-            <div style={{ width: `${panelSizes[2]}%` }}>
+            <div style={{ width: `${panelSizes[2]}%` }} className="h-full">
               <ResearchPanel 
                 report={researchReport}
                 onDragToCanvas={handleDragToCanvas}
               />
             </div>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 2)} />
-            <div style={{ width: `${panelSizes[3]}%` }}>
+            <div style={{ width: `${panelSizes[3]}%` }} className="h-full">
               <CanvasPanel 
                 blocks={canvasBlocks}
                 onBlocksChange={setCanvasBlocks}
@@ -282,7 +288,7 @@ const Index: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 transition-all duration-700 ease-in-out"
+      className="h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 transition-all duration-700 ease-in-out overflow-hidden"
     >
       {renderLayout()}
     </div>
