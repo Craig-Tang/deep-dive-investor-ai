@@ -292,9 +292,8 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
     <div className={`h-full flex flex-col ${mode === 'cards' ? 'p-6' : mode === 'full' ? 'p-6' : mode === 'compact' ? 'p-4' : 'p-2'}`}>
       <div className={`mb-6 ${mode === 'minimal' ? 'mb-3' : ''}`}>
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className={`font-bold text-foreground ${
-              mode === 'minimal' ? 'text-sm' : mode === 'compact' ? 'text-lg' : 'text-3xl'
+          <div>            <h2 className={`font-bold text-foreground ${
+              mode === 'minimal' ? 'text-sm' : mode === 'compact' ? 'text-xl' : 'text-3xl'
             }`}>
               {mode === 'minimal' ? '新闻' : mode === 'cards' ? '市场资讯' : '投资新闻'}
             </h2>

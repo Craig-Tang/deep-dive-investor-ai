@@ -90,7 +90,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="输入问题"
               className={`border-0 bg-transparent focus:ring-0 focus:outline-none flex-1 ${
-                mode === 'input-only' ? 'text-base placeholder:text-muted-foreground/70 h-auto' : ''
+                mode === 'input-only' ? 'text-lg placeholder:text-muted-foreground/70 h-auto' : 'text-base'
               }`}
               disabled={isDeepResearching}
             />
@@ -99,8 +99,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 <Button
                   type="button"
                   variant={isDeepResearchMode ? "default" : "ghost"}
-                  size="sm"
-                  className={`h-9 px-3 text-xs rounded-full transition-all ${
+                  size="sm"                  className={`h-9 px-3 text-sm rounded-full transition-all ${
                     isDeepResearchMode 
                       ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm' 
                       : 'text-primary hover:bg-primary/10 hover:text-primary'
@@ -126,8 +125,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             <Button
               type="button"
               variant={isDeepResearchMode ? "default" : "ghost"}
-              size="sm"
-              className={`absolute right-12 top-1 h-8 px-2 text-xs ${
+              size="sm"              className={`absolute right-12 top-1 h-8 px-2 text-sm ${
                 isDeepResearchMode 
                   ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
                   : 'text-primary hover:bg-muted'
@@ -188,10 +186,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   }
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      {(mode === 'full' || mode === 'compact' || mode === 'chat') && (
+    <div className="h-full flex flex-col bg-background">      {(mode === 'full' || mode === 'compact' || mode === 'chat') && (
         <div className={`border-b bg-card/80 backdrop-blur-sm ${mode === 'compact' ? 'p-3' : 'p-4'}`}>
-          <h2 className={`font-bold text-foreground ${mode === 'compact' ? 'text-lg' : 'text-xl'}`}>
+          <h2 className={`font-bold text-foreground text-xl`}>
             AI 投研助手
           </h2>
           <p className="text-muted-foreground text-sm mt-1">
