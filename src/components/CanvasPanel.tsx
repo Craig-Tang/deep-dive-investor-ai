@@ -48,51 +48,46 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
         return <FileText className="w-4 h-4" />;
     }
   };
-
   const getBlockColor = (type: ReportBlock['type']) => {
     switch (type) {
       case 'summary':
-        return 'border-green-200 bg-green-50';
+        return 'border-muted-foreground/30 bg-muted/40';
       case 'chart':
-        return 'border-purple-200 bg-purple-50';
+        return 'border-accent-foreground/30 bg-accent/40';
       case 'paragraph':
       default:
-        return 'border-blue-200 bg-blue-50';
+        return 'border-secondary-foreground/30 bg-secondary/40';
     }
   };
-
   return (
-    <div className="h-full flex flex-col bg-white border-l">
-      <div className="border-b p-4 bg-gray-50">
+    <div className="h-full w-full flex flex-col bg-background border-l">
+      <div className="border-b p-4 bg-muted/30 flex-shrink-0 ">
         <div className="flex items-center gap-2">
-          <Palette className="w-5 h-5 text-purple-600" />
-          <h2 className="text-lg font-semibold text-gray-800">我的画布</h2>
+          <Palette className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-semibold text-foreground">我的画布</h2>
         </div>
-        <p className="text-sm text-gray-600 mt-1">拖拽内容到这里整理</p>
+        <p className="text-sm text-muted-foreground mt-1">拖拽内容到这里整理</p>
       </div>
-      
-      <div 
-        className="flex-1 p-4 overflow-y-auto"
+        <div 
+        className="flex-1 w-full p-4 overflow-y-auto"
         onDrop={handleDrop}
-        onDragOver={handleDragOver}
-      >
-        {blocks.length === 0 ? (
-          <div className="h-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
-            <div className="text-center text-gray-500">
-              <Palette className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+        onDragOver={handleDragOver}      >{blocks.length === 0 ? (
+          <div className="min-h-full w-full flex items-center justify-center border-2 border-dashed border-muted-foreground/30 rounded-lg">
+            <div className="text-center text-muted-foreground">
+              <Palette className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
               <p className="font-medium">拖拽内容到画布</p>
               <p className="text-sm mt-1">从研究报告拖拽感兴趣的内容</p>
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="w-full space-y-4">
             {blocks.map((block) => (
-              <Card key={block.id} className={`${getBlockColor(block.type)} border`}>
+              <Card key={block.id} className={`w-full ${getBlockColor(block.type)} border`}>
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {getBlockIcon(block.type)}
-                      <h3 className="font-medium text-sm">{block.title}</h3>
+                      <h3 className="font-medium text-sm text-foreground">{block.title}</h3>
                     </div>
                     <div className="flex items-center gap-1">
                       <Badge variant="outline" className="text-xs">
@@ -111,7 +106,7 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <p className="text-xs text-gray-700 leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {block.content}
                   </p>
                 </CardContent>
