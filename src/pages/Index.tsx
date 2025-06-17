@@ -158,9 +158,7 @@ const Index: React.FC = () => {
       impact: 'medium',
       readTime: 3
     }
-  ];
-
-  // 关键词选择处理
+  ];  // 关键词选择处理
   const handleKeywordToggle = (keyword: string) => {
     setSelectedKeywords(prev => {
       const newKeywords = prev.includes(keyword) 
@@ -518,16 +516,18 @@ const Index: React.FC = () => {
               onKeywordToggle={handleKeywordToggle}
             />
           </div>
-        </div>
-          {/* 悬浮的输入框 */}
+        </div>        {/* 悬浮的输入框 */}
         <div className="fixed bottom-8 left-8 right-8 z-50">
           <div className="max-w-3xl mx-auto">
-            <ChatInput
+            <ChatPanel
+              messages={[]}
+              onSendMessage={handleSendMessage}
+              isDeepResearching={false}
+              researchProgress={0}
+              mode="input-only"
               selectedKeywords={selectedKeywords}
               suggestedQuestions={suggestedQuestions}
-              onSendMessage={handleSendMessage}
               onClearKeywords={handleClearKeywords}
-              placeholder="输入您的AI投资问题，获得专业分析..."
             />
           </div>
         </div>
@@ -604,8 +604,7 @@ const Index: React.FC = () => {
                         </Card>
                       </div>
                     </div>
-                  ))}
-                </>              )}
+                  ))}                </>              )}
             </div>
             {/* 左侧面板的悬浮输入框 */}
             <div className="absolute bottom-3 left-6 right-6 z-10">
@@ -616,6 +615,9 @@ const Index: React.FC = () => {
                   isDeepResearching={isDeepResearching}
                   researchProgress={researchProgress}
                   mode="input-only"
+                  selectedKeywords={selectedKeywords}
+                  suggestedQuestions={suggestedQuestions}
+                  onClearKeywords={handleClearKeywords}
                 />
               </div>
             </div>
@@ -715,13 +717,15 @@ const Index: React.FC = () => {
               </div>
               {/* 左侧面板的悬浮输入框 */}
               <div className="absolute bottom-3 left-6 right-6 z-10">
-                <div className="max-w-2xl mx-auto">
-                  <ChatPanel 
+                <div className="max-w-2xl mx-auto">                  <ChatPanel 
                     messages={[]}
                     onSendMessage={handleSendMessage}
                     isDeepResearching={isDeepResearching}
                     researchProgress={researchProgress}
                     mode="input-only"
+                    selectedKeywords={selectedKeywords}
+                    suggestedQuestions={suggestedQuestions}
+                    onClearKeywords={handleClearKeywords}
                   />
                 </div>
               </div>

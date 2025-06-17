@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, Sparkles, User, Bot } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Send, Sparkles, User, Bot, X } from 'lucide-react';
 import type { Message } from '@/pages/Index';
 
 interface ChatPanelProps {
@@ -12,6 +13,9 @@ interface ChatPanelProps {
   isDeepResearching: boolean;
   researchProgress: number;
   mode: 'overlay' | 'full' | 'compact' | 'input-only' | 'chat';
+  selectedKeywords?: string[];
+  suggestedQuestions?: string[];
+  onClearKeywords?: () => void;
 }
 
 export const ChatPanel: React.FC<ChatPanelProps> = ({
@@ -19,7 +23,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onSendMessage,
   isDeepResearching,
   researchProgress,
-  mode
+  mode,
+  selectedKeywords = [],
+  suggestedQuestions = [],
+  onClearKeywords
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [isDeepResearchMode, setIsDeepResearchMode] = useState(false);
@@ -28,6 +35,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleSuggestionClick = (question: string) => {
+    setInputValue(question);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,12 +75,61 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         </Card>
       </div>
     </div>
-  );  const inputSection = (    <div className={`${
+  );  const inputSection = (
+    <div className={`${
       mode === 'input-only' ? 'floating-input' : 
       'border-t bg-card/95 backdrop-blur-sm'
-    } p-4`}>
+    } p-4 space-y-3`}>
+      
+      {/* 选中的关键词显示 */}
+      {selectedKeywords.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/50">
+          <span className="text-xs text-muted-foreground font-medium">已选关键词:</span>
+          {selectedKeywords.map((keyword) => (
+            <Badge 
+              key={keyword} 
+              variant="secondary" 
+              className="text-xs bg-primary/10 text-primary border-primary/20"
+            >
+              {keyword}
+            </Badge>
+          ))}
+          {onClearKeywords && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onClearKeywords}
+              className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          )}
+        </div>
+      )}
+
+      {/* 问题推荐 */}
+      {suggestedQuestions.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-foreground">推荐问题</span>
+          </div>
+          <div className="space-y-2">
+            {suggestedQuestions.map((question, index) => (
+              <button
+                key={index}
+                onClick={() => handleSuggestionClick(question)}
+                className="w-full text-left p-3 text-sm bg-muted/30 hover:bg-muted/50 rounded-lg border border-border/30 hover:border-primary/30 transition-all duration-200"
+              >
+                {question}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {isDeepResearching && (
-        <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+        <div className="p-3 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-primary animate-spin" />
             <span className="text-sm font-medium text-foreground">智研 进行中...</span>

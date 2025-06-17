@@ -210,18 +210,27 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
                   
                   <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
                     {item.summary}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {item.keywords.slice(0, 3).map((keyword) => (
-                      <Badge 
-                        key={keyword} 
-                        variant="outline" 
-                        className="text-xs py-0.5 px-1.5 bg-muted/50"
-                      >
-                        {keyword}
-                      </Badge>
-                    ))}
+                  </p>                    <div className="flex flex-wrap gap-1 mb-3">
+                    {item.keywords.slice(0, 3).map((keyword) => {
+                      const isSelected = selectedKeywords.includes(keyword);
+                      return (
+                        <Badge 
+                          key={keyword} 
+                          variant="outline" 
+                          className={`text-xs py-0.5 px-1.5 cursor-pointer transition-all duration-200 ${
+                            isSelected 
+                              ? 'bg-primary text-primary-foreground border-primary' 
+                              : 'bg-muted/50 hover:bg-muted border-border hover:border-primary/50'
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onKeywordToggle?.(keyword);
+                          }}
+                        >
+                          {keyword}
+                        </Badge>
+                      );
+                    })}
                   </div>
                   
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -269,17 +278,27 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
               <p className="text-muted-foreground mb-4 leading-relaxed">
                 {item.summary}
               </p>
-              
-              <div className="flex flex-wrap gap-2 mb-4">
-                {item.keywords.map((keyword) => (
-                  <Badge 
-                    key={keyword} 
-                    variant="outline" 
-                    className="text-xs py-1 px-2 bg-muted/50 hover:bg-muted transition-colors"
-                  >
-                    {keyword}
-                  </Badge>
-                ))}
+                <div className="flex flex-wrap gap-2 mb-4">
+                {item.keywords.map((keyword) => {
+                  const isSelected = selectedKeywords.includes(keyword);
+                  return (
+                    <Badge 
+                      key={keyword} 
+                      variant="outline" 
+                      className={`text-xs py-1 px-2 cursor-pointer transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-primary text-primary-foreground border-primary' 
+                          : 'bg-muted/50 hover:bg-muted border-border hover:border-primary/50'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onKeywordToggle?.(keyword);
+                      }}
+                    >
+                      {keyword}
+                    </Badge>
+                  );
+                })}
               </div>
               
               <div className="flex items-center justify-between text-sm text-muted-foreground pt-4 border-t border-border/50">
