@@ -58,20 +58,22 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             {message.isDeepResearch && (
               <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
                 <Sparkles className="w-3 h-3" />
-                <span>Deep Research</span>
+                <span>智研</span>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
     </div>
-  );  const inputSection = (
-    <div className={`${mode === 'input-only' ? 'floating-input' : 'border-t bg-card/95 backdrop-blur-sm'} p-4`}>
+  );  const inputSection = (    <div className={`${
+      mode === 'input-only' ? 'floating-input' : 
+      'border-t bg-card/95 backdrop-blur-sm'
+    } p-4`}>
       {isDeepResearching && (
         <div className="mb-4 p-3 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-primary animate-spin" />
-            <span className="text-sm font-medium text-foreground">Deep Research 进行中...</span>
+            <span className="text-sm font-medium text-foreground">智研 进行中...</span>
           </div>
           <Progress value={researchProgress} className="h-2" />
           <p className="text-xs text-muted-foreground mt-1">正在分析市场数据和新闻资讯</p>
@@ -83,19 +85,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             mode === 'input-only' 
               ? 'chat-input-modern px-4' 
               : 'bg-background border border-input rounded-lg px-3 py-2'
-          }`}>
-            <Input
+          }`}>            <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="输入您的投资问题，开始智能分析..."
+              placeholder="输入问题"
               className={`border-0 bg-transparent focus:ring-0 focus:outline-none flex-1 ${
                 mode === 'input-only' ? 'text-base placeholder:text-muted-foreground/70 h-auto' : ''
               }`}
               disabled={isDeepResearching}
             />
             
-            {mode === 'input-only' && (
-              <div className="flex items-center gap-2">
+            {mode === 'input-only' && (              <div className="flex items-center gap-2">
                 <Button
                   type="button"
                   variant={isDeepResearchMode ? "default" : "ghost"}
@@ -109,7 +109,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   disabled={isDeepResearching}
                 >
                   <Sparkles className="w-3 h-3 mr-1.5" />
-                  Deep
+                  智研
                 </Button>
                 
                 <Button 
@@ -122,8 +122,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               </div>
             )}
           </div>
-          
-          {mode !== 'input-only' && (
+            {mode !== 'input-only' && (
             <Button
               type="button"
               variant={isDeepResearchMode ? "default" : "ghost"}
@@ -137,7 +136,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               disabled={isDeepResearching}
             >
               <Sparkles className="w-3 h-3 mr-1" />
-              Deep
+              智研
             </Button>
           )}
         </div>
@@ -152,12 +151,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </Button>
         )}
       </form>
-      
-      {mode === 'input-only' && (
+        {mode === 'input-only' && (
         <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-3 h-3" />
-            Deep Research 深度分析
+            智研模式 深度分析
           </span>
           <span className="text-muted-foreground/50">•</span>
           <span>智能投资建议</span>
@@ -166,7 +164,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       )}
     </div>
-  );if (mode === 'input-only') {
+  );  if (mode === 'input-only') {
     return (
       <div className="floating-input-container">
         {inputSection}

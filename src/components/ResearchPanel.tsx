@@ -47,7 +47,7 @@ export const ResearchPanel: React.FC<ResearchPanelProps> = ({
         <div className="text-center text-muted-foreground">
           <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
           <p className="text-lg font-medium mb-2">深度研究报告</p>
-          <p className="text-sm">使用 Deep Research 生成详细的投资分析报告</p>
+          <p className="text-sm">使用 智研 生成详细的投资分析报告</p>
         </div>
       </div>
     );
