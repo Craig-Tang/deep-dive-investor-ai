@@ -8,10 +8,11 @@ import { ChatInput } from '@/components/ChatInput';
 import { ResizableHandle } from '@/components/ResizableHandle';
 import { GeminiLoader } from '@/components/GeminiLoader';
 import { StackedNewsHome } from '@/components/StackedNewsHome';
+import { HistoryPanel } from '@/components/HistoryPanel';
 import { useResizable } from '@/hooks/useResizable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Palette, MessageSquare, User, Bot, Sparkles } from 'lucide-react';
+import { Palette, MessageSquare, User, Bot, Sparkles, History } from 'lucide-react';
 
 export type LayoutMode = 'home' | 'chat' | 'research' | 'research-canvas';
 
@@ -53,15 +54,17 @@ export interface ReportBlock {
   };
 }
 
-const Index: React.FC = () => {
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>('home');
+const Index: React.FC = () => {  const [layoutMode, setLayoutMode] = useState<LayoutMode>('home');
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [researchReport, setResearchReport] = useState<ReportBlock[] | null>(null);
   const [canvasBlocks, setCanvasBlocks] = useState<ReportBlock[]>([]);
   const [isDeepResearching, setIsDeepResearching] = useState(false);
   const [researchProgress, setResearchProgress] = useState(0);
-  const [showCanvas, setShowCanvas] = useState(false);  // 可调整宽度的面板引用
+  const [showCanvas, setShowCanvas] = useState(false);
+  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
+  const [historyPanelType, setHistoryPanelType] = useState<'report' | 'canvas'>('report');
+  // 可调整宽度的面板引用
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -504,11 +507,60 @@ const Index: React.FC = () => {
     setResearchReport(null);
     setCanvasBlocks([]);
     setShowCanvas(false);
-  };  // 首页布局
+    setShowHistoryPanel(false);
+  };
+
+  // 历史记录处理函数
+  const handleShowHistory = (type: 'report' | 'canvas') => {
+    setHistoryPanelType(type);
+    setShowHistoryPanel(true);
+    if (layoutMode === 'home') {
+      setLayoutMode('research');
+    }
+  };
+  const handleHistorySelect = (item: { type: string; data: ReportBlock[] | Record<string, unknown> }) => {
+    if (item.type === 'report' && Array.isArray(item.data)) {
+      setResearchReport(item.data);
+      setLayoutMode('research');
+    } else if (item.type === 'canvas' && Array.isArray(item.data)) {
+      setCanvasBlocks(item.data);
+      setShowCanvas(true);
+      setLayoutMode('research');
+    }
+    setShowHistoryPanel(false);
+  };
+
+  // 首页布局
   if (layoutMode === 'home') {
-    return (      <div className="h-screen w-full bg-background overflow-hidden relative">
-        {/* 新闻卡片主界面 */}
-        <div className="h-full pb-28 overflow-auto">          <div className="p-6">            <StackedNewsHome 
+    return (
+      <div className="h-screen w-full bg-background overflow-hidden relative">
+        {/* 顶部工具栏 */}
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setLayoutMode('research')}
+            className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
+          >
+            <MessageSquare className="w-4 h-4" />
+            研究报告
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setLayoutMode('research');
+              setShowCanvas(true);
+            }}
+            className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
+          >
+            <Palette className="w-4 h-4" />
+            画布
+          </Button>
+        </div>
+        
+        {/* 新闻卡片主界面 - 三列叠层卡片模式 */}
+        <div className="h-full pb-32 overflow-auto">
+          <div className="p-6 max-w-7xl mx-auto">
+            <StackedNewsHome 
               news={mockNews} 
               selectedKeywords={selectedKeywords}
               onKeywordToggle={handleKeywordToggle}
@@ -516,7 +568,7 @@ const Index: React.FC = () => {
               maxKeywords={4}
             />
           </div>
-        </div>        {/* 悬浮的输入框 */}
+        </div>{/* 悬浮的输入框 */}
         <div className="fixed bottom-8 left-8 right-8 z-50">
           <div className="max-w-3xl mx-auto">
             <ChatPanel
@@ -537,9 +589,8 @@ const Index: React.FC = () => {
   // 普通聊天模式
   if (layoutMode === 'chat') {
     return (
-      <div className="h-screen w-full bg-background overflow-hidden relative">
-        {/* 顶部返回按钮 */}
-        <div className="h-16 border-b bg-card/80 backdrop-blur-sm flex items-center px-4 flex-shrink-0">
+      <div className="h-screen w-full bg-background overflow-hidden relative">        {/* 顶部返回按钮和工具栏 */}
+        <div className="h-16 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between px-4 flex-shrink-0">
           <Button 
             variant="ghost" 
             onClick={handleBackToHome}
@@ -547,7 +598,29 @@ const Index: React.FC = () => {
           >
             ← 返回首页
           </Button>
-        </div>        {/* 新闻-聊天组合布局 */}
+          
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setLayoutMode('research')}
+              className="flex items-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" />
+              研究报告
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setLayoutMode('research');
+                setShowCanvas(true);
+              }}
+              className="flex items-center gap-2"
+            >
+              <Palette className="w-4 h-4" />
+              画布
+            </Button>
+          </div>
+        </div>{/* 新闻-聊天组合布局 */}
         <div style={{height: 'calc(100vh - 4rem)'}}>          <NewsChatLayout
             news={mockNews}
             onNewsSelect={setSelectedNews}
@@ -562,6 +635,7 @@ const Index: React.FC = () => {
             researchProgress={researchProgress}
             suggestedQuestions={suggestedQuestions}
             onClearKeywords={handleClearKeywords}
+            newsRatio={0.65} // Chat模式下给新闻区域更多空间以显示三栏布局
             chatPlaceholder={{
               title: "开始对话",
               subtitle: "输入您的AI投资问题，获得专业分析"
@@ -614,30 +688,41 @@ const Index: React.FC = () => {
             researchProgress={researchProgress}
             suggestedQuestions={suggestedQuestions}
             onClearKeywords={handleClearKeywords}
+            newsRatio={0.5} // 研究模式下给新闻区域适中的空间
+            panelWidth={showCanvas ? threePanelSizes[0] : twoPanelSizes[0]}
           />
-        </div><ResizableHandle onMouseDown={(e) => showCanvas ? handleThreePanelMouseDown(e, 0) : handleTwoPanelMouseDown(e, 0)} />
-
-        {/* 中间：研究报告 */}
+        </div><ResizableHandle onMouseDown={(e) => showCanvas ? handleThreePanelMouseDown(e, 0) : handleTwoPanelMouseDown(e, 0)} />        {/* 中间：研究报告 */}
         <div style={{ width: showCanvas ? `${threePanelSizes[1]}%` : `${twoPanelSizes[1]}%` }} className="h-full">
           <ResearchPanel 
             report={researchReport}
             onDragToCanvas={handleDragToCanvas}
+            onShowHistory={() => handleShowHistory('report')}
           />
-        </div>        {/* 右侧：画布（可选） */}
+        </div>{/* 右侧：画布（可选） */}
         {showCanvas && (
           <>
-            <ResizableHandle onMouseDown={(e) => handleThreePanelMouseDown(e, 1)} />
-            <div style={{ width: `${threePanelSizes[2]}%` }} className="h-full w-full">              <CanvasPanel 
+            <ResizableHandle onMouseDown={(e) => handleThreePanelMouseDown(e, 1)} />            <div style={{ width: `${threePanelSizes[2]}%` }} className="h-full w-full">              <CanvasPanel 
                 blocks={canvasBlocks}
                 onBlocksChange={setCanvasBlocks}
                 onGenerateReport={handleGenerateReport}
                 onContinueResearch={handleContinueResearch}
                 onExportMarkdown={handleExportMarkdown}
+                onShowHistory={() => handleShowHistory('canvas')}
               />
             </div>
           </>
-        )}
-      </div>
+        )}      </div>
+      
+      {/* 历史记录面板 */}
+      {showHistoryPanel && (
+        <div className="absolute top-0 right-0 h-full z-50">
+          <HistoryPanel
+            type={historyPanelType}
+            onSelect={handleHistorySelect}
+            onClose={() => setShowHistoryPanel(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

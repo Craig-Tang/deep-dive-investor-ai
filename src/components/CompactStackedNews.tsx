@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackedNewsCards } from './StackedNewsCards';
+import { ResponsiveStackedNews } from './ResponsiveStackedNews';
 import { NewsPanel } from './NewsPanel';
 import type { NewsItem } from '@/pages/Index';
 
@@ -10,6 +10,7 @@ interface CompactStackedNewsProps {
   onNewsSelect: (news: NewsItem) => void;
   maxKeywords?: number;
   mode: 'full' | 'compact' | 'minimal' | 'cards' | 'stacked';
+  width?: number; // 当前面板宽度百分比，用于自适应布局
 }
 
 export const CompactStackedNews: React.FC<CompactStackedNewsProps> = ({
@@ -18,21 +19,20 @@ export const CompactStackedNews: React.FC<CompactStackedNewsProps> = ({
   onKeywordToggle,
   onNewsSelect,
   maxKeywords = 4,
-  mode
+  mode,
+  width = 100
 }) => {
-  
-  // 如果是stacked模式，使用叠层卡片；否则使用原来的NewsPanel
+  // 如果是stacked模式，使用自适应叠层卡片；否则使用原来的NewsPanel
   if (mode === 'stacked') {
     return (
-      <div className="h-full">
-        <StackedNewsCards
+      <div className="h-full px-3">
+        <ResponsiveStackedNews
           news={news}
           selectedKeywords={selectedKeywords}
           onKeywordToggle={onKeywordToggle}
           onNewsSelect={onNewsSelect}
-          title="最新AI投研动态"
           maxKeywords={maxKeywords}
-          className="h-full"
+          width={width}
         />
       </div>
     );

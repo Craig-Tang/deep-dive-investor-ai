@@ -1,26 +1,37 @@
 import React, { useMemo } from 'react';
 import { StackedNewsCards } from './StackedNewsCards';
-import { AISummary } from './AISummary';
 import type { NewsItem } from '@/pages/Index';
 
-interface StackedNewsHomeProps {
+interface ResponsiveStackedNewsProps {
   news: NewsItem[];
   selectedKeywords: string[];
   onKeywordToggle?: (keyword: string) => void;
   onNewsSelect: (news: NewsItem) => void;
   maxKeywords?: number;
+  width?: number; // 当前面板宽度百分比，用于自适应布局
 }
 
-export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
+export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
   news,
   selectedKeywords,
   onKeywordToggle,
   onNewsSelect,
-  maxKeywords = 4
+  maxKeywords = 4,
+  width = 100
 }) => {
-  
-  // 新闻分类逻辑
+    // 根据宽度决定布局模式 - 降低三栏的门槛以适应Chat模式
+  const layoutMode = useMemo(() => {
+    if (width >= 55) return 'three-column'; // 三列（降低门槛）
+    if (width >= 35) return 'two-column';   // 两列（降低门槛）
+    return 'single-column';                 // 单列
+  }, [width]);
+
+  // 新闻分类逻辑（仅在三列模式下使用）
   const categorizedNews = useMemo(() => {
+    if (layoutMode !== 'three-column') {
+      return { all: news };
+    }
+
     // AI公司投创：包括融资、IPO、投资基金等
     const investmentNews = news.filter(item => 
       ['AI融资', '风险投资', 'IPO上市'].includes(item.category) ||
@@ -52,14 +63,11 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
       technology: technologyNews,
       application: applicationNews
     };
-  }, [news]);  return (
-    <div className="space-y-6">
-      {/* AI总结 */}
-      <AISummary />
-      
-      {/* 三列叠层卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 h-full">
-        {/* AI公司投创 */}
+  }, [news, layoutMode]);
+  // 三列模式
+  if (layoutMode === 'three-column') {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full">
         <div className="flex flex-col">
           <StackedNewsCards
             news={categorizedNews.investment}
@@ -71,8 +79,6 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
             className="flex-1"
           />
         </div>
-
-        {/* AI技术突破 */}
         <div className="flex flex-col">
           <StackedNewsCards
             news={categorizedNews.technology}
@@ -84,9 +90,7 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
             className="flex-1"
           />
         </div>
-
-        {/* AI应用论文 */}
-        <div className="flex flex-col md:col-span-2 lg:col-span-1">
+        <div className="flex flex-col">
           <StackedNewsCards
             news={categorizedNews.application}
             selectedKeywords={selectedKeywords}
@@ -98,6 +102,55 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
           />
         </div>
       </div>
+    );
+  }
+
+  // 两列模式
+  if (layoutMode === 'two-column') {
+    const halfIndex = Math.ceil(news.length / 2);
+    const firstHalf = news.slice(0, halfIndex);
+    const secondHalf = news.slice(halfIndex);
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+        <div className="flex flex-col">
+          <StackedNewsCards
+            news={firstHalf}
+            selectedKeywords={selectedKeywords}
+            onKeywordToggle={onKeywordToggle}
+            onNewsSelect={onNewsSelect}
+            title="AI投研动态 (1)"
+            maxKeywords={maxKeywords}
+            className="flex-1"
+          />
+        </div>
+        <div className="flex flex-col">
+          <StackedNewsCards
+            news={secondHalf}
+            selectedKeywords={selectedKeywords}
+            onKeywordToggle={onKeywordToggle}
+            onNewsSelect={onNewsSelect}
+            title="AI投研动态 (2)"
+            maxKeywords={maxKeywords}
+            className="flex-1"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // 单列模式
+  return (
+    <div className="h-full">
+      <StackedNewsCards
+        news={news}
+        selectedKeywords={selectedKeywords}
+        onKeywordToggle={onKeywordToggle}
+        onNewsSelect={onNewsSelect}
+        title="AI投研动态"
+        maxKeywords={maxKeywords}
+        className="h-full"
+      />
     </div>
   );
 };

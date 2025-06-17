@@ -17,6 +17,7 @@ interface CanvasPanelProps {
   onGenerateReport?: () => void;
   onContinueResearch?: (content: string) => void;
   onExportMarkdown?: () => void;
+  onShowHistory?: () => void;
 }
 
 interface EditableBlockProps {
@@ -240,7 +241,8 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
   onBlocksChange,
   onGenerateReport,
   onContinueResearch,
-  onExportMarkdown
+  onExportMarkdown,
+  onShowHistory
 }) => {const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     console.log('Drop event triggered');
@@ -303,9 +305,8 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
   const handleContinueResearch = () => {
     const content = blocks.map(block => block.title).join('、');
     onContinueResearch?.(content);
-  };
-    return (
-    <div className="h-full w-full flex flex-col bg-background border-l">
+  };    return (
+    <div className="h-full w-full flex flex-col bg-background border-l animate-in slide-in-from-right-5 duration-300">
       <div className="border-b p-4 bg-muted/30 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -316,37 +317,50 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
             </Badge>
           </div>
           
-          {blocks.length > 0 && (
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            {onShowHistory && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleContinueResearch}
+                onClick={onShowHistory}
                 className="h-8 px-3 flex items-center gap-1"
               >
-                <Search className="w-3 h-3" />
-                继续研究
+                <History className="w-3 h-3" />
+                历史记录
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onGenerateReport}
-                className="h-8 px-3 flex items-center gap-1"
-              >
-                <FileText className="w-3 h-3" />
-                生成报告
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onExportMarkdown || handleExportMarkdown}
-                className="h-8 px-3 flex items-center gap-1"
-              >
-                <Download className="w-3 h-3" />
-                导出MD
-              </Button>
-            </div>
-          )}
+            )}
+            {blocks.length > 0 && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleContinueResearch}
+                  className="h-8 px-3 flex items-center gap-1"
+                >
+                  <Search className="w-3 h-3" />
+                  继续研究
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onGenerateReport}
+                  className="h-8 px-3 flex items-center gap-1"
+                >
+                  <FileText className="w-3 h-3" />
+                  生成报告
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onExportMarkdown || handleExportMarkdown}
+                  className="h-8 px-3 flex items-center gap-1"
+                >
+                  <Download className="w-3 h-3" />
+                  导出MD
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         <p className="text-sm text-muted-foreground mt-1">
           {blocks.length === 0 ? '拖拽内容到这里整理' : '编辑内容，管理您的投资研究'}

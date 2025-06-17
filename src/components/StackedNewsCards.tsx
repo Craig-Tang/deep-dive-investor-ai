@@ -126,15 +126,11 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
     if (isRightSwipe) {
       setCurrentIndex((prev) => (prev - 1 + news.length) % news.length);
     }
-  };
-  // 自动播放功能
+  };  // 自动播放功能（已禁用）
   const startAutoPlay = useCallback(() => {
-    if (news.length <= 1) return;
-    setIsAutoPlaying(true);
-    autoPlayIntervalRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % news.length);
-    }, 4000); // 每4秒切换一次
-  }, [news.length]);
+    // 自动播放已禁用
+    return;
+  }, []);
 
   const stopAutoPlay = useCallback(() => {
     setIsAutoPlaying(false);
@@ -143,31 +139,30 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
       autoPlayIntervalRef.current = null;
     }
   }, []);
-  // 组件挂载时开始自动播放
+  
+  // 组件挂载时清理定时器
   useEffect(() => {
-    startAutoPlay();
     return () => stopAutoPlay();
-  }, [news.length, startAutoPlay, stopAutoPlay]);
+  }, [stopAutoPlay]);
 
-  // 鼠标悬停时暂停自动播放
-  useEffect(() => {
-    if (isHovered) {
-      stopAutoPlay();
-    } else {
-      startAutoPlay();
-    }
-  }, [isHovered, startAutoPlay, stopAutoPlay]);
-
+  // 禁用悬停时的自动播放逻辑
+  // useEffect(() => {
+  //   if (isHovered) {
+  //     stopAutoPlay();
+  //   } else {
+  //     startAutoPlay();
+  //   }
+  // }, [isHovered, startAutoPlay, stopAutoPlay]);
   // 渲染关键词
   const renderKeywords = (item: NewsItem) => (
-    <div className="flex flex-wrap gap-1 mb-3">
+    <div className="flex flex-wrap gap-1.5">
       {item.keywords.slice(0, maxKeywords).map((keyword) => {
         const isSelected = selectedKeywords.includes(keyword);
         return (
           <Badge 
             key={keyword} 
             variant="outline" 
-            className={`text-xs py-0.5 px-2 cursor-pointer transition-all duration-200 ${
+            className={`text-xs py-1 px-2 cursor-pointer transition-all duration-200 ${
               isSelected 
                 ? 'bg-primary text-primary-foreground border-primary' 
                 : 'bg-muted/50 hover:bg-muted border-border hover:border-primary/50'
@@ -182,7 +177,7 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
         );
       })}
       {item.keywords.length > maxKeywords && (
-        <Badge variant="outline" className="text-xs py-0.5 px-2 bg-muted/30">
+        <Badge variant="outline" className="text-xs py-1 px-2 bg-muted/30">
           +{item.keywords.length - maxKeywords}
         </Badge>
       )}
@@ -212,7 +207,7 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
   return (
     <div className={`relative ${className}`}>
       {/* 标题 */}
-      <div className="mb-4">
+      <div className="mb-8">
         <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
         <div className="h-1 w-12 bg-primary rounded-full"></div>
       </div>      {/* 叠层卡片容器 */}
@@ -254,8 +249,8 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
               }}
               onClick={() => isActive ? onNewsSelect(item) : goToCard(index)}
             >
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between mb-2">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Badge className={`text-xs px-2 py-0.5 border ${getCategoryColor(item.category)}`}>
                       {item.category}
@@ -274,19 +269,19 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
                   )}
                 </div>
                 
-                <h4 className="text-base font-semibold text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                <h4 className="text-base font-semibold text-foreground line-clamp-2 mb-3 group-hover:text-primary transition-colors">
                   {item.title}
                 </h4>
               </CardHeader>
               
-              <CardContent className="pt-0">
-                <p className="text-muted-foreground text-sm line-clamp-3 mb-3">
+              <CardContent className="pt-0 space-y-4">
+                <p className="text-muted-foreground text-sm line-clamp-3">
                   {item.summary}
                 </p>
                 
                 {isActive && renderKeywords(item)}
                 
-                <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/50">
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border/50">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />

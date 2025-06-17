@@ -1,6 +1,6 @@
 import React from 'react';
 import { NewsPanel } from './NewsPanel';
-import { CompactStackedNews } from './CompactStackedNews';
+import { ResponsiveStackedNews } from './ResponsiveStackedNews';
 import { ChatPanel } from './ChatPanel';
 import { ChatMessages } from './ChatMessages';
 import type { NewsItem, Message } from '@/pages/Index';
@@ -25,6 +25,7 @@ interface NewsChatLayoutProps {
   
   // 布局相关
   newsRatio?: number; // 新闻区域占比，默认2/5 (40%)
+  panelWidth?: number; // 当前面板宽度百分比，用于响应式布局
   chatPlaceholder?: {
     title: string;
     subtitle: string;
@@ -46,6 +47,7 @@ export const NewsChatLayout: React.FC<NewsChatLayoutProps> = ({
   suggestedQuestions,
   onClearKeywords,
   newsRatio = 2/5,
+  panelWidth = 100,
   chatPlaceholder = {
     title: "AI风投研究助手",
     subtitle: "开始AI投资研究分析"
@@ -56,15 +58,26 @@ export const NewsChatLayout: React.FC<NewsChatLayoutProps> = ({
   
   return (
     <div className="flex flex-col h-full">      {/* 新闻区域 */}
-      <div style={newsStyle} className="min-h-0 overflow-auto border-b">
-        <CompactStackedNews 
-          news={news} 
-          onNewsSelect={onNewsSelect}
-          mode={newsMode}
-          selectedKeywords={selectedKeywords}
-          onKeywordToggle={onKeywordToggle}
-          maxKeywords={maxKeywords}
-        />
+      <div style={newsStyle} className="min-h-0 overflow-auto border-b">        {newsMode === 'stacked' ? (
+          <ResponsiveStackedNews 
+            news={news} 
+            selectedKeywords={selectedKeywords}
+            onKeywordToggle={onKeywordToggle}
+            onNewsSelect={onNewsSelect}
+            maxKeywords={maxKeywords}
+            width={panelWidth}
+          />
+        ) : (
+          <NewsPanel 
+            news={news} 
+            onNewsSelect={onNewsSelect}
+            selectedNews={selectedNews}
+            mode={newsMode}
+            selectedKeywords={selectedKeywords}
+            onKeywordToggle={onKeywordToggle}
+            maxKeywords={maxKeywords}
+          />
+        )}
       </div>
       
       {/* 聊天区域 */}

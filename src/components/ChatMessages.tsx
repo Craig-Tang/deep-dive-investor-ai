@@ -70,10 +70,10 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                   </CardContent>
                 </Card>
               </div>
-            </div>
-          ))}
+            </div>          ))}
           
-          {isDeepResearching && (
+          {/* 注释掉重复的加载状态，因为已经在messages中添加了loading message */}
+          {/* {isDeepResearching && (
             <div className="flex gap-3 mb-4 justify-start">
               <div className="flex gap-3 max-w-[85%]">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-muted text-muted-foreground">
@@ -87,7 +87,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                 </Card>
               </div>
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>
