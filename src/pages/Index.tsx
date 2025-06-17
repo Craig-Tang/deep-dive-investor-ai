@@ -34,7 +34,7 @@ export interface ReportBlock {
 }
 
 const Index: React.FC = () => {
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>('single');
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('quad');
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [researchReport, setResearchReport] = useState<ReportBlock[] | null>(null);
@@ -50,14 +50,8 @@ const Index: React.FC = () => {
     resetSizes
   } = useResizable({
     containerRef,
-    initialSizes: layoutMode === 'single' ? [100] :
-                   layoutMode === 'dual' ? [40, 60] :
-                   layoutMode === 'triple' ? [25, 45, 30] :
-                   [20, 25, 30, 25],
-    minSizes: layoutMode === 'single' ? [100] :
-              layoutMode === 'dual' ? [20, 30] :
-              layoutMode === 'triple' ? [15, 30, 20] :
-              [10, 15, 20, 15]
+    initialSizes: [20, 25, 30, 25],
+    minSizes: [10, 15, 20, 15]
   });
 
   // 模拟新闻数据
@@ -102,10 +96,6 @@ const Index: React.FC = () => {
 
     setMessages(prev => [...prev, newMessage]);
 
-    if (layoutMode === 'single') {
-      setLayoutMode('dual');
-    }
-
     if (isDeepResearch) {
       setIsDeepResearching(true);
       setResearchProgress(0);
@@ -135,9 +125,6 @@ const Index: React.FC = () => {
                 type: 'paragraph'
               }
             ]);
-            if (layoutMode === 'dual') {
-              setLayoutMode('triple');
-            }
             return 100;
           }
           return prev + 10;
@@ -158,128 +145,6 @@ const Index: React.FC = () => {
 
   const handleDragToCanvas = (block: ReportBlock) => {
     setCanvasBlocks(prev => [...prev, { ...block, id: Date.now().toString() }]);
-    if (layoutMode !== 'quad') {
-      setLayoutMode('quad');
-    }
-  };
-
-  const renderLayout = () => {
-    switch (layoutMode) {
-      case 'single':
-        return (
-          <div className="w-full h-full">
-            <NewsPanel 
-              news={mockNews} 
-              onNewsSelect={setSelectedNews}
-              selectedNews={selectedNews}
-              mode="full"
-            />
-            <ChatPanel 
-              messages={messages}
-              onSendMessage={handleSendMessage}
-              isDeepResearching={isDeepResearching}
-              researchProgress={researchProgress}
-              mode="overlay"
-            />
-          </div>
-        );
-      
-      case 'dual':
-        return (
-          <div className="flex h-full w-full">
-            <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
-              <NewsPanel 
-                news={mockNews} 
-                onNewsSelect={setSelectedNews}
-                selectedNews={selectedNews}
-                mode="compact"
-              />
-            </div>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
-            <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
-              <ChatPanel 
-                messages={messages}
-                onSendMessage={handleSendMessage}
-                isDeepResearching={isDeepResearching}
-                researchProgress={researchProgress}
-                mode="full"
-              />
-            </div>
-          </div>
-        );
-      
-      case 'triple':
-        return (
-          <div className="flex h-full w-full">
-            <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
-              <NewsPanel 
-                news={mockNews} 
-                onNewsSelect={setSelectedNews}
-                selectedNews={selectedNews}
-                mode="minimal"
-              />
-            </div>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
-            <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
-              <ChatPanel 
-                messages={messages}
-                onSendMessage={handleSendMessage}
-                isDeepResearching={isDeepResearching}
-                researchProgress={researchProgress}
-                mode="compact"
-              />
-            </div>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
-            <div style={{ width: `${panelSizes[2]}%` }} className="h-full">
-              <ResearchPanel 
-                report={researchReport}
-                onDragToCanvas={handleDragToCanvas}
-              />
-            </div>
-          </div>
-        );
-      
-      case 'quad':
-        return (
-          <div className="flex h-full w-full">
-            <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
-              <NewsPanel 
-                news={mockNews} 
-                onNewsSelect={setSelectedNews}
-                selectedNews={selectedNews}
-                mode="minimal"
-              />
-            </div>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
-            <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
-              <ChatPanel 
-                messages={messages}
-                onSendMessage={handleSendMessage}
-                isDeepResearching={isDeepResearching}
-                researchProgress={researchProgress}
-                mode="compact"
-              />
-            </div>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
-            <div style={{ width: `${panelSizes[2]}%` }} className="h-full">
-              <ResearchPanel 
-                report={researchReport}
-                onDragToCanvas={handleDragToCanvas}
-              />
-            </div>
-            <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 2)} />
-            <div style={{ width: `${panelSizes[3]}%` }} className="h-full">
-              <CanvasPanel 
-                blocks={canvasBlocks}
-                onBlocksChange={setCanvasBlocks}
-              />
-            </div>
-          </div>
-        );
-      
-      default:
-        return null;
-    }
   };
 
   return (
@@ -287,7 +152,40 @@ const Index: React.FC = () => {
       ref={containerRef}
       className="h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden"
     >
-      {renderLayout()}
+      <div className="flex h-full w-full">
+        <div style={{ width: `${panelSizes[0]}%` }} className="h-full">
+          <NewsPanel 
+            news={mockNews} 
+            onNewsSelect={setSelectedNews}
+            selectedNews={selectedNews}
+            mode="minimal"
+          />
+        </div>
+        <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 0)} />
+        <div style={{ width: `${panelSizes[1]}%` }} className="h-full">
+          <ChatPanel 
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            isDeepResearching={isDeepResearching}
+            researchProgress={researchProgress}
+            mode="compact"
+          />
+        </div>
+        <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
+        <div style={{ width: `${panelSizes[2]}%` }} className="h-full">
+          <ResearchPanel 
+            report={researchReport}
+            onDragToCanvas={handleDragToCanvas}
+          />
+        </div>
+        <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 2)} />
+        <div style={{ width: `${panelSizes[3]}%` }} className="h-full">
+          <CanvasPanel 
+            blocks={canvasBlocks}
+            onBlocksChange={setCanvasBlocks}
+          />
+        </div>
+      </div>
     </div>
   );
 };
