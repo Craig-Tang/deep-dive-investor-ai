@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -149,18 +148,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </Button>
         )}
       </form>
-        {mode === 'input-only' && (
-        <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3" />
-            智研模式 深度分析
-          </span>
-          <span className="text-muted-foreground/50">•</span>
-          <span>智能投资建议</span>
-          <span className="text-muted-foreground/50">•</span>
-          <span>实时市场洞察</span>
-        </div>
-      )}
     </div>
   );  if (mode === 'input-only') {
     return (

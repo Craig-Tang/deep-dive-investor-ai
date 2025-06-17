@@ -218,10 +218,9 @@ const Index: React.FC = () => {
     setShowCanvas(false);
   };  // 首页布局
   if (layoutMode === 'home') {
-    return (
-      <div className="h-screen w-full bg-background overflow-hidden relative">
+    return (      <div className="h-screen w-full bg-background overflow-hidden relative">
         {/* 新闻卡片主界面 */}
-        <div className="h-full pb-40 overflow-auto">
+        <div className="h-full pb-28 overflow-auto">
           <div className="p-6">
             <NewsPanel 
               news={mockNews} 
@@ -261,74 +260,71 @@ const Index: React.FC = () => {
             ← 返回首页
           </Button>
         </div>
-        
         {/* 压缩的新闻展示 */}
-        <div className="h-48 border-b overflow-auto flex-shrink-0">
-          <NewsPanel 
-            news={mockNews} 
-            onNewsSelect={setSelectedNews}
-            selectedNews={selectedNews}
-            mode="compact"
-          />
-        </div>
-        
-        {/* 聊天消息区域 */}
-        <div className="flex-1 overflow-hidden pb-32">
-          <div className="h-full overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-            {messages.length === 0 ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center text-muted-foreground">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
-                    <MessageSquare className="w-8 h-8 text-muted-foreground/50" />
-                  </div>
-                  <p className="text-lg font-medium mb-2">开始对话</p>
-                  <p className="text-sm">输入您的投资问题，获得AI智能分析</p>
-                </div>
-              </div>
-            ) : (
-              <>
-                {messages.map((message) => (
-                  <div key={message.id} className={`flex gap-3 mb-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`flex gap-3 max-w-[80%] ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        message.type === 'user' 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-muted text-muted-foreground'
-                      }`}>
-                        {message.type === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                      </div>
-                      <Card className={`${
-                        message.type === 'user' 
-                          ? 'bg-primary text-primary-foreground border-primary' 
-                          : 'bg-card border-border'
-                      } shadow-sm`}>                        <CardContent className="p-3">
-                          <p className="text-sm leading-relaxed">{message.content}</p>
-                          {message.isDeepResearch && (
-                            <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
-                              <Sparkles className="w-3 h-3" />
-                              <span>智研</span>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-        </div>
-        
-        {/* 悬浮的输入框 */}
-        <div className="fixed bottom-6 left-6 right-6 z-50">
-          <div className="max-w-2xl mx-auto">
-            <ChatPanel 
-              messages={[]}
-              onSendMessage={handleSendMessage}
-              isDeepResearching={isDeepResearching}
-              researchProgress={researchProgress}
-              mode="input-only"
+        <div className="flex flex-col h-full" style={{height: 'calc(100vh - 4rem)'}}>
+          <div className="basis-2/5 min-h-0 overflow-auto border-b">
+            <NewsPanel 
+              news={mockNews} 
+              onNewsSelect={setSelectedNews}
+              selectedNews={selectedNews}
+              mode="compact"
             />
+          </div>          <div className="basis-3/5 min-h-0 overflow-hidden relative flex-1">
+            <div className="h-full overflow-y-auto p-4 pb-28 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+              {messages.length === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center text-muted-foreground">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                      <MessageSquare className="w-8 h-8 text-muted-foreground/50" />
+                    </div>
+                    <p className="text-lg font-medium mb-2">开始对话</p>
+                    <p className="text-sm">输入您的投资问题，获得AI智能分析</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {messages.map((message) => (
+                    <div key={message.id} className={`flex gap-3 mb-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`flex gap-3 max-w-[80%] ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          message.type === 'user' 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-muted text-muted-foreground'
+                        }`}>
+                          {message.type === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                        </div>
+                        <Card className={`${
+                          message.type === 'user' 
+                            ? 'bg-primary text-primary-foreground border-primary' 
+                            : 'bg-card border-border'
+                        } shadow-sm`}>
+                          <CardContent className="p-3">
+                            <p className="text-base leading-relaxed">{message.content}</p>
+                            {message.isDeepResearch && (
+                              <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
+                                <Sparkles className="w-3 h-3" />
+                                <span>智研</span>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  ))}
+                </>              )}
+            </div>
+            {/* 左侧面板的悬浮输入框 */}
+            <div className="absolute bottom-3 left-6 right-6 z-10">
+              <div className="max-w-2xl mx-auto">
+                <ChatPanel 
+                  messages={[]}
+                  onSendMessage={handleSendMessage}
+                  isDeepResearching={isDeepResearching}
+                  researchProgress={researchProgress}
+                  mode="input-only"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -365,70 +361,72 @@ const Index: React.FC = () => {
       <div className="flex h-[calc(100vh-4rem)] relative">
         {/* 左侧：新闻 + 聊天 */}
         <div style={{ width: showCanvas ? `${panelSizes[0]}%` : `${panelSizes[0]}%` }} className="h-full flex flex-col relative">
-          {/* 新闻区域 */}
-          <div className="h-48 border-b overflow-auto flex-shrink-0">
-            <NewsPanel 
-              news={mockNews} 
-              onNewsSelect={setSelectedNews}
-              selectedNews={selectedNews}
-              mode="compact"
-            />
-          </div>
-          
-          {/* 聊天消息区域 */}
-          <div className="flex-1 overflow-hidden pb-20">
-            <div className="h-full overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-              {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center text-muted-foreground">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted/50 flex items-center justify-center">
-                      <MessageSquare className="w-6 h-6 text-muted-foreground/50" />
-                    </div>
-                    <p className="text-base font-medium mb-1">AI 投研助手</p>
-                    <p className="text-xs">开始深度研究对话</p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {messages.map((message) => (
-                    <div key={message.id} className={`flex gap-3 mb-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`flex gap-3 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          message.type === 'user' 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'bg-muted text-muted-foreground'
-                        }`}>
-                          {message.type === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
-                        </div>
-                        <Card className={`${
-                          message.type === 'user' 
-                            ? 'bg-primary text-primary-foreground border-primary' 
-                            : 'bg-card border-border'
-                        } shadow-sm`}>                          <CardContent className="p-3">
-                            <p className="text-xs leading-relaxed">{message.content}</p>
-                            {message.isDeepResearch && (
-                              <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
-                                <Sparkles className="w-3 h-3" />
-                                <span>智研</span>
-                              </div>
-                            )}
-                          </CardContent>
-                        </Card>
+          {/* 新闻区域和聊天区域 4/6 分栏 */}
+          <div className="flex flex-col h-full">
+            <div className="basis-2/5 min-h-0 overflow-auto border-b">
+              <NewsPanel 
+                news={mockNews} 
+                onNewsSelect={setSelectedNews}
+                selectedNews={selectedNews}
+                mode="compact"
+              />
+            </div>            <div className="basis-3/5 min-h-0 overflow-hidden relative flex-1">
+              <div className="h-full overflow-y-auto p-4 pb-28 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+                {messages.length === 0 ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center text-muted-foreground">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted/50 flex items-center justify-center">
+                        <MessageSquare className="w-6 h-6 text-muted-foreground/50" />
                       </div>
+                      <p className="text-base font-medium mb-1">AI 投研助手</p>
+                      <p className="text-xs">开始深度研究对话</p>
                     </div>
-                  ))}
-                </>
-              )}
+                  </div>
+                ) : (
+                  <>
+                    {messages.map((message) => (
+                      <div key={message.id} className={`flex gap-3 mb-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`flex gap-3 max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            message.type === 'user' 
+                              ? 'bg-primary text-primary-foreground' 
+                              : 'bg-muted text-muted-foreground'
+                          }`}>
+                            {message.type === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
+                          </div>
+                          <Card className={`${
+                            message.type === 'user' 
+                              ? 'bg-primary text-primary-foreground border-primary' 
+                              : 'bg-card border-border'
+                          } shadow-sm`}>
+                            <CardContent className="p-3">
+                              <p className="text-base leading-relaxed">{message.content}</p>
+                              {message.isDeepResearch && (
+                                <div className="flex items-center gap-1 mt-2 text-xs opacity-75">
+                                  <Sparkles className="w-3 h-3" />
+                                  <span>智研</span>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+                    ))}
+                  </>                )}
+              </div>
+              {/* 左侧面板的悬浮输入框 */}
+              <div className="absolute bottom-3 left-6 right-6 z-10">
+                <div className="max-w-2xl mx-auto">
+                  <ChatPanel 
+                    messages={[]}
+                    onSendMessage={handleSendMessage}
+                    isDeepResearching={isDeepResearching}
+                    researchProgress={researchProgress}
+                    mode="input-only"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-            {/* 左侧面板的悬浮输入框 */}
-          <div className="absolute bottom-3 left-3 right-3 z-10">            <ChatPanel 
-              messages={[]}
-              onSendMessage={handleSendMessage}
-              isDeepResearching={isDeepResearching}
-              researchProgress={researchProgress}
-              mode="input-only"
-            />
           </div>
         </div>
 
@@ -446,7 +444,7 @@ const Index: React.FC = () => {
         {showCanvas && (
           <>
             <ResizableHandle onMouseDown={(e) => handleMouseDown(e, 1)} />
-            <div style={{ width: `${panelSizes[2]}%` }} className="h-full">
+            <div style={{ width: `${panelSizes[2]}%` }} className="h-full w-full">
               <CanvasPanel 
                 blocks={canvasBlocks}
                 onBlocksChange={setCanvasBlocks}
