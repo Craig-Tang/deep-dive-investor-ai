@@ -11,13 +11,17 @@ interface NewsPanelProps {
   onNewsSelect: (news: NewsItem | null) => void;
   selectedNews: NewsItem | null;
   mode: 'full' | 'compact' | 'minimal' | 'cards';
+  selectedKeywords?: string[];
+  onKeywordToggle?: (keyword: string) => void;
 }
 
 export const NewsPanel: React.FC<NewsPanelProps> = ({ 
   news, 
   onNewsSelect, 
   selectedNews, 
-  mode 
+  mode,
+  selectedKeywords = [],
+  onKeywordToggle
 }) => {
   
   const formatTimeAgo = (date: Date) => {
@@ -95,18 +99,28 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
               <p className="text-muted-foreground mb-4 leading-relaxed text-sm line-clamp-3">
                 {item.summary}
               </p>
-              
-              {/* 关键词 */}
+                {/* 关键词 */}
               <div className="flex flex-wrap gap-1 mb-4">
-                {item.keywords.slice(0, 4).map((keyword) => (
-                  <Badge 
-                    key={keyword} 
-                    variant="outline" 
-                    className="text-xs py-0.5 px-2 bg-muted/50 hover:bg-muted transition-colors"
-                  >
-                    {keyword}
-                  </Badge>
-                ))}
+                {item.keywords.slice(0, 4).map((keyword) => {
+                  const isSelected = selectedKeywords.includes(keyword);
+                  return (
+                    <Badge 
+                      key={keyword} 
+                      variant="outline" 
+                      className={`text-xs py-0.5 px-2 cursor-pointer transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-primary text-primary-foreground border-primary' 
+                          : 'bg-muted/50 hover:bg-muted border-border hover:border-primary/50'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onKeywordToggle?.(keyword);
+                      }}
+                    >
+                      {keyword}
+                    </Badge>
+                  );
+                })}
                 {item.keywords.length > 4 && (
                   <Badge variant="outline" className="text-xs py-0.5 px-2 bg-muted/30">
                     +{item.keywords.length - 4}
@@ -290,6 +304,23 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
     }
   };  return (
     <div className={`h-full flex flex-col ${mode === 'cards' ? 'p-6' : mode === 'full' ? 'p-6' : mode === 'compact' ? 'p-4' : 'p-2'}`}>
+      {/* AI今日总览 */}
+      {mode === 'cards' && (
+        <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border/50">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
+            <span className="text-sm font-medium text-foreground">
+              今日投资要闻总览 - {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            今日AI投资市场持续活跃，OpenAI估值突破1570亿美元引发行业关注，Anthropic发布Claude 4.0展现AGI新进展，
+            投资者需重点关注大模型技术突破、AI基础设施建设和垂直领域应用三大投资主线。
+            建议关注具备技术壁垒的AI芯片公司和有清晰商业模式的AI应用企业。
+          </p>
+        </div>
+      )}
+      
       <div className={`mb-6 ${mode === 'minimal' ? 'mb-3' : ''}`}>
         <div className="flex items-center justify-between">
           <div>            <h2 className={`font-bold text-foreground ${

@@ -3,6 +3,7 @@ import { NewsPanel } from '@/components/NewsPanel';
 import { ChatPanel } from '@/components/ChatPanel';
 import { ResearchPanel } from '@/components/ResearchPanel';
 import { CanvasPanel } from '@/components/CanvasPanel';
+import { ChatInput } from '@/components/ChatInput';
 import { ResizableHandle } from '@/components/ResizableHandle';
 import { GeminiLoader } from '@/components/GeminiLoader';
 import { useResizable } from '@/hooks/useResizable';
@@ -59,6 +60,8 @@ const Index: React.FC = () => {
   const [isDeepResearching, setIsDeepResearching] = useState(false);
   const [researchProgress, setResearchProgress] = useState(0);
   const [showCanvas, setShowCanvas] = useState(false);  // 可调整宽度的面板引用
+  const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   
   // 两面板模式：左侧和中间面板的尺寸控制（没有画布时）
@@ -155,7 +158,78 @@ const Index: React.FC = () => {
       impact: 'medium',
       readTime: 3
     }
-  ];const handleSendMessage = async (content: string, isDeepResearch: boolean = false) => {
+  ];
+
+  // 关键词选择处理
+  const handleKeywordToggle = (keyword: string) => {
+    setSelectedKeywords(prev => {
+      const newKeywords = prev.includes(keyword) 
+        ? prev.filter(k => k !== keyword)
+        : [...prev, keyword];
+      
+      // 基于关键词生成问题推荐
+      generateQuestionSuggestions(newKeywords);
+      return newKeywords;
+    });
+  };
+
+  // 基于关键词生成意图识别和问题推荐
+  const generateQuestionSuggestions = (keywords: string[]) => {
+    if (keywords.length === 0) {
+      setSuggestedQuestions([]);
+      return;
+    }
+
+    const suggestions: string[] = [];
+    
+    // 基于关键词组合生成相关问题
+    if (keywords.includes('OpenAI') || keywords.includes('估值')) {
+      suggestions.push('分析OpenAI当前估值的合理性和投资风险');
+    }
+    if (keywords.includes('融资') || keywords.includes('AI初创')) {
+      suggestions.push('梳理当前AI领域的投资热点和估值趋势');
+    }
+    if (keywords.includes('IPO') || keywords.includes('上市')) {
+      suggestions.push('评估AI公司IPO的市场时机和投资机会');
+    }
+    if (keywords.includes('监管') || keywords.includes('AI法案')) {
+      suggestions.push('分析AI监管政策对投资的影响和应对策略');
+    }
+    if (keywords.some(k => ['Claude', 'GPT', '大模型'].includes(k))) {
+      suggestions.push('对比分析主流AI大模型的技术优势和商业前景');
+    }
+    
+    // 通用投资分析问题
+    if (keywords.length > 1) {
+      suggestions.push(`深度研究${keywords.join('、')}相关的投资机会`);
+    }
+    
+    setSuggestedQuestions(suggestions.slice(0, 4));
+  };
+
+  const handleClearKeywords = () => {
+    setSelectedKeywords([]);
+    setSuggestedQuestions([]);
+  };
+
+  const handleGenerateReport = () => {
+    // 模拟生成报告功能
+    console.log('生成报告功能');
+    // TODO: 实现基于画布内容生成结构化报告
+  };
+
+  const handleContinueResearch = (content: string) => {
+    // 基于画布内容继续研究
+    const researchQuery = `基于以下内容进行进一步分析：${content}`;
+    handleSendMessage(researchQuery, true);
+  };
+
+  const handleExportMarkdown = () => {
+    // 导出markdown功能在CanvasPanel中实现
+    console.log('导出Markdown功能');
+  };
+
+  const handleSendMessage = async (content: string, isDeepResearch: boolean = false) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content,
@@ -434,26 +508,26 @@ const Index: React.FC = () => {
   if (layoutMode === 'home') {
     return (      <div className="h-screen w-full bg-background overflow-hidden relative">
         {/* 新闻卡片主界面 */}
-        <div className="h-full pb-28 overflow-auto">
-          <div className="p-6">
+        <div className="h-full pb-28 overflow-auto">          <div className="p-6">
             <NewsPanel 
               news={mockNews} 
               onNewsSelect={setSelectedNews}
               selectedNews={selectedNews}
               mode="cards"
+              selectedKeywords={selectedKeywords}
+              onKeywordToggle={handleKeywordToggle}
             />
           </div>
         </div>
-        
-        {/* 悬浮的输入框 */}
+          {/* 悬浮的输入框 */}
         <div className="fixed bottom-8 left-8 right-8 z-50">
           <div className="max-w-3xl mx-auto">
-            <ChatPanel 
-              messages={[]}
+            <ChatInput
+              selectedKeywords={selectedKeywords}
+              suggestedQuestions={suggestedQuestions}
               onSendMessage={handleSendMessage}
-              isDeepResearching={false}
-              researchProgress={0}
-              mode="input-only"
+              onClearKeywords={handleClearKeywords}
+              placeholder="输入您的AI投资问题，获得专业分析..."
             />
           </div>
         </div>
@@ -474,16 +548,17 @@ const Index: React.FC = () => {
             ← 返回首页
           </Button>
         </div>
-        {/* 压缩的新闻展示 */}
-        <div className="flex flex-col h-full" style={{height: 'calc(100vh - 4rem)'}}>
+        {/* 压缩的新闻展示 */}        <div className="flex flex-col h-full" style={{height: 'calc(100vh - 4rem)'}}>
           <div className="basis-2/5 min-h-0 overflow-auto border-b">
             <NewsPanel 
               news={mockNews} 
               onNewsSelect={setSelectedNews}
               selectedNews={selectedNews}
               mode="compact"
+              selectedKeywords={selectedKeywords}
+              onKeywordToggle={handleKeywordToggle}
             />
-          </div>          <div className="basis-3/5 min-h-0 overflow-hidden relative flex-1">
+          </div><div className="basis-3/5 min-h-0 overflow-hidden relative flex-1">
             <div className="h-full overflow-y-auto p-4 pb-28 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
@@ -579,16 +654,17 @@ const Index: React.FC = () => {
       </div>      {/* 主内容区域 */}
       <div className="flex h-[calc(100vh-4rem)] relative">        {/* 左侧：新闻 + 聊天 */}
         <div style={{ width: showCanvas ? `${threePanelSizes[0]}%` : `${twoPanelSizes[0]}%` }} className="h-full flex flex-col relative">
-          {/* 新闻区域和聊天区域 4/6 分栏 */}
-          <div className="flex flex-col h-full">
+          {/* 新闻区域和聊天区域 4/6 分栏 */}          <div className="flex flex-col h-full">
             <div className="basis-2/5 min-h-0 overflow-auto border-b">
               <NewsPanel 
                 news={mockNews} 
                 onNewsSelect={setSelectedNews}
                 selectedNews={selectedNews}
                 mode="compact"
+                selectedKeywords={selectedKeywords}
+                onKeywordToggle={handleKeywordToggle}
               />
-            </div>            <div className="basis-3/5 min-h-0 overflow-hidden relative flex-1">
+            </div><div className="basis-3/5 min-h-0 overflow-hidden relative flex-1">
               <div className="h-full overflow-y-auto p-4 pb-28 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
                 {messages.length === 0 ? (
                   <div className="flex items-center justify-center h-full">
@@ -663,10 +739,12 @@ const Index: React.FC = () => {
         {showCanvas && (
           <>
             <ResizableHandle onMouseDown={(e) => handleThreePanelMouseDown(e, 1)} />
-            <div style={{ width: `${threePanelSizes[2]}%` }} className="h-full w-full">
-              <CanvasPanel 
+            <div style={{ width: `${threePanelSizes[2]}%` }} className="h-full w-full">              <CanvasPanel 
                 blocks={canvasBlocks}
                 onBlocksChange={setCanvasBlocks}
+                onGenerateReport={handleGenerateReport}
+                onContinueResearch={handleContinueResearch}
+                onExportMarkdown={handleExportMarkdown}
               />
             </div>
           </>

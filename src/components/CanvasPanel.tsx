@@ -7,13 +7,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Palette, Trash2, FileText, BarChart3, TrendingUp, Edit3, Save, X, Plus } from 'lucide-react';
+import { Palette, Trash2, FileText, BarChart3, TrendingUp, Edit3, Save, X, Plus, Download, FileDown, Search, History } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import type { ReportBlock } from '@/pages/Index';
 
 interface CanvasPanelProps {
   blocks: ReportBlock[];
   onBlocksChange: (blocks: ReportBlock[]) => void;
+  onGenerateReport?: () => void;
+  onContinueResearch?: (content: string) => void;
+  onExportMarkdown?: () => void;
 }
 
 interface EditableBlockProps {
@@ -234,8 +237,11 @@ const EditableBlock: React.FC<EditableBlockProps> = ({ block, onUpdate, onRemove
 
 export const CanvasPanel: React.FC<CanvasPanelProps> = ({ 
   blocks, 
-  onBlocksChange 
-}) => {  const handleDrop = (e: React.DragEvent) => {
+  onBlocksChange,
+  onGenerateReport,
+  onContinueResearch,
+  onExportMarkdown
+}) => {const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     console.log('Drop event triggered');
     try {
@@ -258,21 +264,93 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
   };
   const removeBlock = (blockId: string) => {
     onBlocksChange(blocks.filter(block => block.id !== blockId));
-  };
-  const updateBlock = (blockId: string, updatedBlock: ReportBlock) => {
+  };  const updateBlock = (blockId: string, updatedBlock: ReportBlock) => {
     onBlocksChange(blocks.map(block => 
       block.id === blockId ? updatedBlock : block
     ));
   };
-  
-  return (
+
+  const handleExportMarkdown = () => {
+    if (blocks.length === 0) return;
+    
+    let markdown = `# 投资研究报告\n\n`;
+    markdown += `*生成时间: ${new Date().toLocaleString('zh-CN')}*\n\n`;
+    
+    blocks.forEach((block, index) => {
+      markdown += `## ${index + 1}. ${block.title}\n\n`;
+      markdown += `${block.content}\n\n`;
+      
+      if (block.references && block.references.length > 0) {
+        markdown += `### 参考文献\n\n`;
+        block.references.forEach((ref, refIndex) => {
+          markdown += `${refIndex + 1}. ${ref}\n`;
+        });
+        markdown += `\n`;
+      }
+    });
+    
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `投资研究报告_${new Date().toISOString().split('T')[0]}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleContinueResearch = () => {
+    const content = blocks.map(block => block.title).join('、');
+    onContinueResearch?.(content);
+  };
+    return (
     <div className="h-full w-full flex flex-col bg-background border-l">
-      <div className="border-b p-4 bg-muted/30 flex-shrink-0 ">
-        <div className="flex items-center gap-2">
-          <Palette className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">我的画布</h2>
+      <div className="border-b p-4 bg-muted/30 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Palette className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">我的画布</h2>
+            <Badge variant="outline" className="text-xs">
+              {blocks.length} 个内容块
+            </Badge>
+          </div>
+          
+          {blocks.length > 0 && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleContinueResearch}
+                className="h-8 px-3 flex items-center gap-1"
+              >
+                <Search className="w-3 h-3" />
+                继续研究
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onGenerateReport}
+                className="h-8 px-3 flex items-center gap-1"
+              >
+                <FileText className="w-3 h-3" />
+                生成报告
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportMarkdown || handleExportMarkdown}
+                className="h-8 px-3 flex items-center gap-1"
+              >
+                <Download className="w-3 h-3" />
+                导出MD
+              </Button>
+            </div>
+          )}
         </div>
-        <p className="text-sm text-muted-foreground mt-1">拖拽内容到这里整理</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {blocks.length === 0 ? '拖拽内容到这里整理' : '编辑内容，管理您的投资研究'}
+        </p>
       </div>
         <div 
         className="flex-1 w-full p-4 overflow-y-auto"
