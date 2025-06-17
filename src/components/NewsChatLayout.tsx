@@ -1,5 +1,6 @@
 import React from 'react';
 import { NewsPanel } from './NewsPanel';
+import { CompactStackedNews } from './CompactStackedNews';
 import { ChatPanel } from './ChatPanel';
 import { ChatMessages } from './ChatMessages';
 import type { NewsItem, Message } from '@/pages/Index';
@@ -9,7 +10,7 @@ interface NewsChatLayoutProps {
   news: NewsItem[];
   onNewsSelect: (news: NewsItem | null) => void;
   selectedNews: NewsItem | null;
-  newsMode: 'full' | 'compact' | 'minimal' | 'cards';
+  newsMode: 'full' | 'compact' | 'minimal' | 'cards' | 'stacked';
   selectedKeywords: string[];
   onKeywordToggle: (keyword: string) => void;
   maxKeywords?: number; // 可配置关键词显示数量
@@ -56,10 +57,9 @@ export const NewsChatLayout: React.FC<NewsChatLayoutProps> = ({
   return (
     <div className="flex flex-col h-full">      {/* 新闻区域 */}
       <div style={newsStyle} className="min-h-0 overflow-auto border-b">
-        <NewsPanel 
+        <CompactStackedNews 
           news={news} 
           onNewsSelect={onNewsSelect}
-          selectedNews={selectedNews}
           mode={newsMode}
           selectedKeywords={selectedKeywords}
           onKeywordToggle={onKeywordToggle}

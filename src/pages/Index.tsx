@@ -7,6 +7,7 @@ import { CanvasPanel } from '@/components/CanvasPanel';
 import { ChatInput } from '@/components/ChatInput';
 import { ResizableHandle } from '@/components/ResizableHandle';
 import { GeminiLoader } from '@/components/GeminiLoader';
+import { StackedNewsHome } from '@/components/StackedNewsHome';
 import { useResizable } from '@/hooks/useResizable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -507,14 +508,12 @@ const Index: React.FC = () => {
   if (layoutMode === 'home') {
     return (      <div className="h-screen w-full bg-background overflow-hidden relative">
         {/* 新闻卡片主界面 */}
-        <div className="h-full pb-28 overflow-auto">          <div className="p-6">
-            <NewsPanel 
+        <div className="h-full pb-28 overflow-auto">          <div className="p-6">            <StackedNewsHome 
               news={mockNews} 
-              onNewsSelect={setSelectedNews}
-              selectedNews={selectedNews}
-              mode="cards"
               selectedKeywords={selectedKeywords}
               onKeywordToggle={handleKeywordToggle}
+              onNewsSelect={setSelectedNews}
+              maxKeywords={4}
             />
           </div>
         </div>        {/* 悬浮的输入框 */}
@@ -549,12 +548,11 @@ const Index: React.FC = () => {
             ← 返回首页
           </Button>
         </div>        {/* 新闻-聊天组合布局 */}
-        <div style={{height: 'calc(100vh - 4rem)'}}>
-          <NewsChatLayout
+        <div style={{height: 'calc(100vh - 4rem)'}}>          <NewsChatLayout
             news={mockNews}
             onNewsSelect={setSelectedNews}
             selectedNews={selectedNews}
-            newsMode="compact"
+            newsMode="stacked"
             selectedKeywords={selectedKeywords}
             onKeywordToggle={handleKeywordToggle}
             maxKeywords={4} // 聊天模式下也显示4个关键词，保持与首页一致
@@ -602,12 +600,11 @@ const Index: React.FC = () => {
         </div>
       </div>      {/* 主内容区域 */}
       <div className="flex h-[calc(100vh-4rem)] relative">        {/* 左侧：新闻 + 聊天 */}
-        <div style={{ width: showCanvas ? `${threePanelSizes[0]}%` : `${twoPanelSizes[0]}%` }} className="h-full flex flex-col relative">
-          <NewsChatLayout
+        <div style={{ width: showCanvas ? `${threePanelSizes[0]}%` : `${twoPanelSizes[0]}%` }} className="h-full flex flex-col relative">          <NewsChatLayout
             news={mockNews}
             onNewsSelect={setSelectedNews}
             selectedNews={selectedNews}
-            newsMode="compact"
+            newsMode="stacked"
             selectedKeywords={selectedKeywords}
             onKeywordToggle={handleKeywordToggle}
             maxKeywords={4} // 研究模式下也显示4个关键词，保持一致性
