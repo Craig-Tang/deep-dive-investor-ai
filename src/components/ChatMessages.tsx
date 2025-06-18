@@ -24,7 +24,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   }
 }) => {
   return (
-    <div className="h-full overflow-y-auto p-4 pb-28 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+    <div className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
       {messages.length === 0 ? (
         <div className="flex items-center justify-center h-full">
           <div className="text-center text-muted-foreground">

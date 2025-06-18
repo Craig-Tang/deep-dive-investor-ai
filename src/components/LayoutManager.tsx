@@ -136,7 +136,6 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
       </div>
     );
   };
-
   // 渲染面板内容
   const renderPanels = () => {
     const panels = React.Children.toArray(children);
@@ -149,11 +148,23 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
       );
     }
 
+    if (config.type === 'single') {
+      // 单面板模式，居中显示，和首页相同的宽度
+      return (
+        <div className="h-full flex justify-center">
+          <div className="w-full max-w-7xl px-4">
+            {panels[0]}
+          </div>
+        </div>
+      );
+    }
+
     if (config.type === 'horizontal') {
       const sizes = config.panels.length === 3 ? threePanelSizes : twoPanelSizes;
       const handleMouseDown = config.panels.length === 3 ? handleThreePanelMouseDown : handleTwoPanelMouseDown;
       
-      return (        <div className="flex h-full">
+      return (
+        <div className="flex h-full">
           {config.panels.map((panelConfig, index) => (
             <React.Fragment key={panelConfig.key}>
               <PanelSlot

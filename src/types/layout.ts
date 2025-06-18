@@ -26,10 +26,9 @@ export const LAYOUT_CONFIGS: Record<LayoutMode, LayoutConfig> = {  home: {
     ],
     resizable: false,
     hasToolbar: true
-  },
-  chat: {
+  },  chat: {
     mode: 'chat',
-    type: 'horizontal',
+    type: 'single',
     panels: [
       { type: 'news-chat', key: 'news-chat', width: 100 }
     ],

@@ -113,10 +113,9 @@ export const NewsChatLayout: React.FC<NewsChatLayoutProps> = ({
           researchProgress={researchProgress}
           placeholder={chatPlaceholder}
         />
-        
-        {/* 悬浮输入框 */}
+          {/* 悬浮输入框 */}
         <div className="absolute bottom-3 left-6 right-6 z-10">
-          <div className="max-w-2xl mx-auto">            <ChatPanel 
+          <div className="max-w-3xl mx-auto">            <ChatPanel 
               messages={[]}
               onSendMessage={handleSendMessage}
               isDeepResearching={isDeepResearching}
