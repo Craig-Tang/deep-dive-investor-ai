@@ -101,14 +101,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             </button>
           )}
         </div>
-      )}{/* 问题推荐 */}
+      )}      {/* 问题推荐 */}
       {suggestedQuestions.length > 0 && (
-        <div className="flex flex-wrap gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-500">
-          {suggestedQuestions.map((question, index) => (
+        <div className="hidden md:flex flex-nowrap gap-2 overflow-hidden animate-in fade-in-0 slide-in-from-bottom-2 duration-500">
+          {suggestedQuestions.slice(0, 3).map((question, index) => (
             <button
               key={index}
               onClick={() => handleSuggestionClick(question)}
-              className="inline-flex items-center px-3 py-1.5 text-xs bg-muted/50 hover:bg-muted/70 text-muted-foreground hover:text-foreground rounded-full border border-border/50 hover:border-border transition-all duration-200 hover:scale-105 animate-in fade-in-0 slide-in-from-bottom-2"
+              className="inline-flex items-center px-3 py-1.5 text-xs bg-muted/50 hover:bg-muted/70 text-muted-foreground hover:text-foreground rounded-full border border-border/50 hover:border-border transition-all duration-200 hover:scale-105 animate-in fade-in-0 slide-in-from-bottom-2 whitespace-nowrap flex-shrink-0"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {question}
@@ -136,7 +136,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           }`}>            <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="输入问题"
+              placeholder="输入问题，开启智聊..."
               className={`border-0 bg-transparent focus:ring-0 focus:outline-none flex-1 ${
                 mode === 'input-only' ? 'text-lg placeholder:text-muted-foreground/70 h-auto' : 'text-base'
               }`}

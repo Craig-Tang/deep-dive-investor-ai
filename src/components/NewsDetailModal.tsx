@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -123,14 +124,11 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
               })}
             </div>
           </div>
-          
-          {/* 主要内容 */}
+            {/* 主要内容 */}
           <div>
             <h4 className="text-sm font-medium text-foreground mb-3">详细内容</h4>
-            <div className="prose prose-sm max-w-none dark:prose-invert">
-              <div className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {item.content}
-              </div>
+            <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-li:text-foreground">
+              <ReactMarkdown>{item.content}</ReactMarkdown>
             </div>
           </div>
           

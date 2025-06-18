@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Palette } from 'lucide-react';
 import { ResizableHandle } from '@/components/ResizableHandle';
@@ -18,14 +18,16 @@ interface LayoutManagerProps {
 interface PanelSlotProps {
   config: PanelConfig;
   width?: string;
+  actualWidth?: number; // 新增：实际像素宽度
   children: React.ReactNode;
 }
 
-const PanelSlot: React.FC<PanelSlotProps> = ({ config, width, children }) => {
+const PanelSlot: React.FC<PanelSlotProps> = ({ config, width, actualWidth, children }) => {
   return (
     <div 
       className="h-full"
       style={{ width: width || `${config.width}%` }}
+      data-actual-width={actualWidth} // 传递实际宽度用于调试
     >
       {children}
     </div>
@@ -42,6 +44,27 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
   currentMode
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(1200); // 默认宽度
+
+  // 监听容器宽度变化
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateContainerWidth();
+    
+    const resizeObserver = new ResizeObserver(updateContainerWidth);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   // 两面板模式的尺寸控制
   const {
@@ -92,15 +115,14 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
               className="flex items-center gap-2 hover:scale-105 transition-all duration-200"
             >
               <MessageSquare className="w-4 h-4" />
-              研究报告
-            </Button>
-            <Button 
+              智研报告
+            </Button>            <Button 
               variant="outline" 
               onClick={() => onModeSwitch('research-canvas')}
               className="flex items-center gap-2 hover:scale-105 transition-all duration-200"
             >
               <Palette className="w-4 h-4" />
-              画布
+              智选
             </Button>
           </div>
         </div>
@@ -123,14 +145,13 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
             className="flex items-center gap-2 hover:scale-105 transition-all duration-200"
           >
             <MessageSquare className="w-4 h-4" />
-            研究报告          </Button>
-          <Button 
+            智研报告          </Button>          <Button 
             variant={showCanvas ? 'default' : 'outline'} 
             onClick={onCanvasToggle}
             className="flex items-center gap-2 hover:scale-105 transition-all duration-200"
           >
             <Palette className="w-4 h-4" />
-            画布
+            智选
           </Button>
         </div>
       </div>

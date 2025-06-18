@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { NewsCard } from './NewsCard';
 import type { NewsItem } from '@/pages/Index';
@@ -100,11 +101,8 @@ export const NewsPanel: React.FC<NewsPanelProps> = ({
                   );
                 })}
               </div>
-              
-              <div className="prose prose-sm max-w-none">
-                <p className="text-muted-foreground leading-relaxed">
-                  {selectedNews.content}
-                </p>
+                <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-muted-foreground prose-p:text-muted-foreground prose-strong:text-muted-foreground prose-li:text-muted-foreground">
+                <ReactMarkdown>{selectedNews.content}</ReactMarkdown>
               </div>
             </div>
           )}

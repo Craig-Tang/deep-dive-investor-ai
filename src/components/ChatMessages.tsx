@@ -24,7 +24,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   }
 }) => {
   return (
-    <div className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+    <div className="h-[calc(100%-9rem)] overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
       {messages.length === 0 ? (
         <div className="flex items-center justify-center h-full">
           <div className="text-center text-muted-foreground">
@@ -69,25 +69,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                     )}
                   </CardContent>
                 </Card>
-              </div>
-            </div>          ))}
-          
-          {/* 注释掉重复的加载状态，因为已经在messages中添加了loading message */}
-          {/* {isDeepResearching && (
-            <div className="flex gap-3 mb-4 justify-start">
-              <div className="flex gap-3 max-w-[85%]">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-muted text-muted-foreground">
-                  <Bot className="w-3.5 h-3.5" />
-                </div>
-                
-                <Card className="bg-card border-border shadow-sm">
-                  <CardContent className="p-3">
-                    <GeminiLoader progress={researchProgress} />
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          )} */}
+              </div>            </div>          ))}
         </>
       )}
     </div>

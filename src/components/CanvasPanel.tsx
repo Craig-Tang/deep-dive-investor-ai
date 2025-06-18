@@ -160,84 +160,84 @@ const EditableBlock: React.FC<EditableBlockProps> = ({ block, onUpdate, onRemove
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-0 space-y-3">
-        {isEditing ? (
+      <CardContent className="pt-0 space-y-3">        {isEditing ? (
           <>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Label htmlFor="content" className="text-xs font-medium">内容 (支持Markdown)</Label>
               <Textarea
                 id="content"
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
-                className="min-h-[120px] text-xs bg-background"
+                className="min-h-[200px] text-sm bg-background"
                 placeholder="输入内容，支持Markdown格式..."
               />
             </div>
             
-            <Separator />
-            
-            <div className="space-y-2">
-              <Label className="text-xs font-medium">参考文献</Label>
-              {editedReferences.map((ref, index) => (
-                <div key={index} className="flex items-center gap-2">
+            <div className="border-t pt-3">
+              <Label className="text-xs font-medium text-muted-foreground">参考文献</Label>
+              <div className="mt-2 space-y-2">
+                {editedReferences.map((ref, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground w-6">[{index + 1}]</span>
+                    <Input
+                      value={ref}
+                      onChange={(e) => {
+                        const newRefs = [...editedReferences];
+                        newRefs[index] = e.target.value;
+                        setEditedReferences(newRefs);
+                      }}
+                      className="text-xs bg-background flex-1"
+                      placeholder="参考文献"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                      onClick={() => removeReference(index)}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground w-6">[{editedReferences.length + 1}]</span>
                   <Input
-                    value={ref}
-                    onChange={(e) => {
-                      const newRefs = [...editedReferences];
-                      newRefs[index] = e.target.value;
-                      setEditedReferences(newRefs);
-                    }}
-                    className="text-xs bg-background"
-                    placeholder="参考文献"
+                    value={newReference}
+                    onChange={(e) => setNewReference(e.target.value)}
+                    className="text-xs bg-background flex-1"
+                    placeholder="添加新的参考文献"
+                    onKeyPress={(e) => e.key === 'Enter' && addReference()}
                   />
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-6 w-6 p-0"
-                    onClick={() => removeReference(index)}
+                    onClick={addReference}
                   >
-                    <X className="w-3 h-3" />
+                    <Plus className="w-3 h-3" />
                   </Button>
                 </div>
-              ))}
-              <div className="flex items-center gap-2">
-                <Input
-                  value={newReference}
-                  onChange={(e) => setNewReference(e.target.value)}
-                  className="text-xs bg-background"
-                  placeholder="添加新的参考文献"
-                  onKeyPress={(e) => e.key === 'Enter' && addReference()}
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  onClick={addReference}
-                >
-                  <Plus className="w-3 h-3" />
-                </Button>
               </div>
             </div>
-          </>
-        ) : (
-          <>            <div className="prose prose-sm max-w-none text-xs text-foreground leading-relaxed">
+          </>        ) : (
+          <>
+            <div className="prose prose-sm max-w-none text-xs text-foreground leading-relaxed">
               <ReactMarkdown>
                 {block.content}
               </ReactMarkdown>
             </div>
             
             {block.references && block.references.length > 0 && (
-              <>
-                <Separator />
+              <div className="pt-3 border-t border-muted-foreground/20">
+                <p className="text-xs font-medium text-muted-foreground mb-2">参考文献：</p>
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-muted-foreground">参考文献：</p>
                   {block.references.map((ref, index) => (
-                    <p key={index} className="text-xs text-muted-foreground">
+                    <p key={index} className="text-xs text-muted-foreground leading-relaxed">
                       [{index + 1}] {ref}
                     </p>
                   ))}
                 </div>
-              </>
+              </div>
             )}
           </>
         )}
@@ -318,14 +318,13 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
     onContinueResearch?.(content);
   };    return (
     <div className="h-full w-full flex flex-col bg-background border-l animate-in slide-in-from-right-5 duration-300">      <div className="border-b p-4 bg-muted/30 flex-shrink-0 animate-in fade-in-0 slide-in-from-top-2 duration-500">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 animate-in fade-in-0 slide-in-from-left-2 duration-700 delay-200">
+        <div className="flex items-center justify-between">          <div className="flex items-center gap-2 animate-in fade-in-0 slide-in-from-left-2 duration-700 delay-200">
             <Palette className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">我的画布</h2>
+            <h2 className="text-lg font-semibold text-foreground">智选</h2>
             <Badge variant="outline" className="text-xs animate-in fade-in-0 zoom-in-95 duration-500 delay-300">
               {blocks.length} 个内容块
             </Badge>
-          </div>            <div className="flex items-center gap-2 animate-in fade-in-0 slide-in-from-right-2 duration-700 delay-200">
+          </div><div className="flex items-center gap-2 animate-in fade-in-0 slide-in-from-right-2 duration-700 delay-200">
             {/* 历史记录按钮 - 常驻显示 */}
             <HistoryDropdown 
               type="canvas"
@@ -363,9 +362,10 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
               </>
             )}
           </div>
-        </div>        <p className="text-sm text-muted-foreground mt-1 animate-in fade-in-0 slide-in-from-bottom-1 duration-500 delay-300">
+        </div>        
+        {/* <p className="text-sm text-muted-foreground mt-1 animate-in fade-in-0 slide-in-from-bottom-1 duration-500 delay-300">
           {blocks.length === 0 ? '拖拽内容到这里整理' : '编辑内容，管理您的投资研究'}
-        </p>
+        </p> */}
       </div>
         <div 
         className="flex-1 w-full p-4 overflow-y-auto"
@@ -374,7 +374,7 @@ export const CanvasPanel: React.FC<CanvasPanelProps> = ({
           <div className="min-h-full w-full flex items-center justify-center border-2 border-dashed border-muted-foreground/30 rounded-lg animate-in fade-in-0 zoom-in-95 duration-500 delay-200">
             <div className="text-center text-muted-foreground animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-400">
               <Palette className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50 animate-pulse" />
-              <p className="font-medium">拖拽内容到画布</p>
+              <p className="font-medium">拖拽内容到智选</p>
               <p className="text-sm mt-1">从研究报告拖拽感兴趣的内容</p>
             </div>
           </div>) : (

@@ -99,7 +99,7 @@ const ResearchDocument: React.FC<ResearchDocumentProps> = ({ report, onDragToCan
                     draggable
                     onDragStart={(e) => handleDragStart(e, block)}
                     onDragEnd={handleDragEnd}
-                    title="拖拽到画布"
+                    title="拖拽到智选"
                   >
                     <div className="flex flex-col gap-0.5">
                       <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full"></div>
@@ -144,7 +144,7 @@ const ResearchDocument: React.FC<ResearchDocumentProps> = ({ report, onDragToCan
                     )}
                   </div>
 
-                  {/* 拖到画布按钮 */}
+                  {/* 拖到智选按钮 */}
                   <Button
                     variant="ghost"
                     size="sm"

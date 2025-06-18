@@ -9,7 +9,7 @@ interface ResponsiveStackedNewsProps {
   onKeywordToggle?: (keyword: string) => void;
   onNewsSelect: (news: NewsItem) => void;
   maxKeywords?: number;
-  width?: number; // 当前面板宽度百分比，用于自适应布局
+  width?: number; // 实际像素宽度或百分比（兼容旧用法）
 }
 
 export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
@@ -20,12 +20,21 @@ export const ResponsiveStackedNews: React.FC<ResponsiveStackedNewsProps> = ({
   maxKeywords = 4,
   width = 100
 }) => {
-    // 根据宽度决定布局模式 - 降低三栏的门槛以适应Chat模式
+  // 根据实际宽度决定布局模式
   const layoutMode = useMemo(() => {
-    if (width >= 55) return 'three-column'; // 三列（降低门槛）
-    if (width >= 35) return 'two-column';   // 两列（降低门槛）
-    return 'single-column';                 // 单列
-  }, [width]);  // 新闻分类逻辑（仅在三列模式下使用）
+    // 如果宽度大于100，说明是像素值；如果小于等于100，说明是百分比
+    let actualWidth = width;
+    
+    if (width <= 100) {
+      // 如果是百分比，估算实际像素宽度（假设容器宽度为1200px）
+      actualWidth = (width / 100) * 1200;
+    }
+    
+    // 基于像素宽度的断点
+    if (actualWidth >= 800) return 'three-column';  // 三列：需要较宽空间
+    if (actualWidth >= 500) return 'two-column';    // 两列：中等空间
+    return 'single-column';                         // 单列：窄空间
+  }, [width]);// 新闻分类逻辑（仅在三列模式下使用）
   const categorizedNews = useMemo(() => {
     if (layoutMode !== 'three-column') {
       return { all: news, investment: [], technology: [], application: [] };

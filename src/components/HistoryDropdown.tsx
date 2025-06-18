@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { History, Calendar, FileText, Palette, ChevronDown } from 'lucide-react';
+import { mockResearchReports, mockCanvasProjects } from '@/data';
 import type { ReportBlock } from '@/pages/Index';
 
 interface HistoryItem {
@@ -36,43 +37,28 @@ export const HistoryDropdown: React.FC<HistoryDropdownProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // 模拟历史数据
-  const mockHistory: HistoryItem[] = [
-    {
-      id: '1',
-      title: 'OpenAI投资分析报告',
-      date: new Date(2025, 5, 17),
-      type: 'report',
-      data: []
-    },
-    {
-      id: '2', 
-      title: 'AI算力行业研究',
-      date: new Date(2025, 5, 16),
-      type: 'report',
-      data: []
-    },
-    {
-      id: '3',
-      title: '投资组合分析画布',
-      date: new Date(2025, 5, 15),
-      type: 'canvas',
-      data: {}
-    },
-    {
-      id: '4',
-      title: '风险评估模型',
-      date: new Date(2025, 5, 14),
-      type: 'canvas', 
-      data: {}
+  // 使用真实的历史数据
+  const getHistoryItems = (): HistoryItem[] => {
+    if (type === 'report') {
+      return mockResearchReports.map(report => ({
+        id: report.id,
+        title: report.title,
+        date: report.date,
+        type: 'report' as const,
+        data: report.blocks
+      }));
+    } else {
+      return mockCanvasProjects.map(project => ({
+        id: project.id,
+        title: project.title,
+        date: project.date,
+        type: 'canvas' as const,
+        data: project.blocks
+      }));
     }
-  ];
+  };
 
-  // 过滤当前类型的历史记录
-  const filteredHistory = mockHistory
-    .filter(item => item.type === type)
-    .slice(0, 5); // 只显示最近5条
+  const filteredHistory = getHistoryItems().slice(0, 5); // 只显示最近5条
 
   const formatDate = (date: Date) => {
     const now = new Date();
