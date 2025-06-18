@@ -70,32 +70,39 @@ export const LayoutManager: React.FC<LayoutManagerProps> = ({
       ? config.panels.map(p => p.minWidth || 20)
       : [30, 20, 20]
   });
-
   // 渲染工具栏
   const renderToolbar = () => {
     if (!config.hasToolbar) return null;
 
     if (config.mode === 'home') {
       return (
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <div className="h-16 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between px-4 flex-shrink-0 z-20 animate-in fade-in-0 slide-in-from-top-2 duration-300">
           <Button 
-            variant="outline" 
-            onClick={() => onModeSwitch('research')}
-            className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
+            variant="ghost" 
+            onClick={onBackToHome}
+            className="flex items-center gap-2 animate-in fade-in-0 slide-in-from-left-2 duration-500 delay-100 hover:scale-105 transition-transform text-lg font-semibold"
           >
-            <MessageSquare className="w-4 h-4" />
-            研究报告
+            Cybernaut
           </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              onModeSwitch('research-canvas');
-            }}
-            className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
-          >
-            <Palette className="w-4 h-4" />
-            画布
-          </Button>
+          
+          <div className="flex gap-2 animate-in fade-in-0 slide-in-from-right-2 duration-500 delay-100">
+            <Button 
+              variant="outline" 
+              onClick={() => onModeSwitch('research')}
+              className="flex items-center gap-2 hover:scale-105 transition-all duration-200"
+            >
+              <MessageSquare className="w-4 h-4" />
+              研究报告
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => onModeSwitch('research-canvas')}
+              className="flex items-center gap-2 hover:scale-105 transition-all duration-200"
+            >
+              <Palette className="w-4 h-4" />
+              画布
+            </Button>
+          </div>
         </div>
       );
     }

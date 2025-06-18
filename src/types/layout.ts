@@ -18,15 +18,14 @@ export interface LayoutConfig {
 }
 
 // 布局配置常量
-export const LAYOUT_CONFIGS: Record<LayoutMode, LayoutConfig> = {
-  home: {
+export const LAYOUT_CONFIGS: Record<LayoutMode, LayoutConfig> = {  home: {
     mode: 'home',
     type: 'overlay',
     panels: [
       { type: 'news', key: 'news-home', width: 100 }
     ],
     resizable: false,
-    hasToolbar: false
+    hasToolbar: true
   },
   chat: {
     mode: 'chat',
