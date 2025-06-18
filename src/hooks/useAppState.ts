@@ -3,7 +3,7 @@ import { useLayoutState } from './useLayoutState';
 import { useNewsState } from './useNewsState';
 import { useChatState } from './useChatState';
 import { useResearchState } from './useResearchState';
-import type { NewsItem, Message, ReportBlock } from '@/pages/Index';
+import type { NewsItem, Message, ReportBlock } from '@/types/common';
 
 interface HistoryItem {
   id: string;
@@ -77,7 +77,7 @@ export const useAppState = () => {
     };
 
     generateAndSetSuggestions();
-  }, [news.selectedKeywords]); // 仅依赖关键词变化
+  }, [news.selectedKeywords, chat]); // 依赖关键词变化和chat
 
   // 组合业务逻辑
   const handleSendMessage = async (content: string, isDeepResearch?: boolean) => {

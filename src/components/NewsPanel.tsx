@@ -2,7 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { NewsCard } from './NewsCard';
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 interface NewsPanelProps {
   news: NewsItem[];

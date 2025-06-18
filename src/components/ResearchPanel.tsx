@@ -3,7 +3,7 @@ import { FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { HistoryDropdown } from './HistoryDropdown';
 import ResearchDocument from '@/components/ResearchDocument';
-import type { ReportBlock } from '@/pages/Index';
+import type { ReportBlock } from '@/types/common';
 
 interface HistoryItem {
   id: string;

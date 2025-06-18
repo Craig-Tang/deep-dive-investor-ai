@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StackedNewsCards } from './StackedNewsCards';
 import { AISummary } from './AISummary';
 import { categorizeNews } from '@/lib/newsUtils';
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 interface StackedNewsHomeProps {
   news: NewsItem[];

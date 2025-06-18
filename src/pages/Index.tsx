@@ -15,47 +15,6 @@ import { useLayoutState } from '@/hooks/useLayoutState';
 import { useState } from 'react';
 import type { Task } from '@/data/tasks';
 
-// 保留原有的类型定义
-export type LayoutMode = 'home' | 'chat' | 'research' | 'research-canvas';
-
-export interface Message {
-  id: string;
-  content: string;
-  type: 'user' | 'assistant';
-  isDeepResearch?: boolean;
-  timestamp: Date;
-  isLoading?: boolean;
-  loadingProgress?: number;
-}
-
-export interface NewsItem {
-  id: string;
-  title: string;
-  summary: string;
-  keywords: string[];
-  content: string;
-  source: string;
-  publishedAt: Date;
-  category: string;
-  impact: 'high' | 'medium' | 'low';
-  imageUrl?: string;
-  readTime: number;
-  trending?: boolean;
-}
-
-export interface ReportBlock {
-  id: string;
-  title: string;
-  content: string;
-  type: 'paragraph' | 'chart' | 'summary' | 'quote' | 'list' | 'heading';
-  references?: string[];
-  metadata?: {
-    source?: string;
-    confidence?: number;
-    lastUpdated?: Date;
-  };
-}
-
 const Index: React.FC = () => {
   // 任务详情弹窗状态
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);

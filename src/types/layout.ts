@@ -1,4 +1,4 @@
-export type LayoutMode = 'home' | 'chat' | 'research' | 'research-canvas';
+import type { LayoutMode } from './common';
 
 export type PanelType = 'news' | 'chat' | 'research' | 'canvas' | 'news-chat';
 

@@ -1,4 +1,4 @@
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 export const investmentNews: NewsItem[] = [
   {

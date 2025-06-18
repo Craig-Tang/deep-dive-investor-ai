@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { HistoryDropdown } from './HistoryDropdown';
 import { Palette, Trash2, FileText, BarChart3, TrendingUp, Edit3, Save, X, Plus, Download, FileDown, Search } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import type { ReportBlock } from '@/pages/Index';
+import type { ReportBlock } from '@/types/common';
 
 interface HistoryItem {
   id: string;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ReportBlock } from '@/pages/Index';
+import type { ReportBlock } from '@/types/common';
 
 export const useResearchState = () => {
   const [researchReport, setResearchReport] = useState<ReportBlock[] | null>(null);

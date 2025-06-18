@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { LayoutMode } from '@/types/layout';
+import type { LayoutMode } from '@/types/common';
 
 export const useLayoutState = () => {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('home');

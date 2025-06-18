@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, TrendingUp, ArrowUpRight, Calendar, Timer } from 'lucide-react';
 import { formatTimeAgo, getImpactColor, getCategoryColor, getImpactText } from '@/lib/newsUtils';
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 interface NewsCardProps {
   item: NewsItem;

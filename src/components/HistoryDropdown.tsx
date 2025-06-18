@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { History, Calendar, FileText, Palette, ChevronDown } from 'lucide-react';
 import { mockResearchReports, mockCanvasProjects } from '@/data';
-import type { ReportBlock } from '@/pages/Index';
+import type { ReportBlock } from '@/types/common';
 
 interface HistoryItem {
   id: string;

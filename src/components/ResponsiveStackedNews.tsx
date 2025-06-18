@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { StackedNewsCards } from './StackedNewsCards';
 import { categorizeNews } from '@/lib/newsUtils';
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 interface ResponsiveStackedNewsProps {
   news: NewsItem[];

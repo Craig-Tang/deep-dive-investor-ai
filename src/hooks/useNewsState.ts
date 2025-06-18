@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 export const useNewsState = () => {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);

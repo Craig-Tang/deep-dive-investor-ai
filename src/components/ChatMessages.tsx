@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { MessageSquare, User, Bot, Sparkles } from 'lucide-react';
 import { GeminiLoader } from './GeminiLoader';
-import type { Message } from '@/pages/Index';
+import type { Message } from '@/types/common';
 
 interface ChatMessagesProps {
   messages: Message[];

@@ -1,4 +1,4 @@
-import type { ReportBlock } from '@/pages/Index';
+import type { ReportBlock } from '@/types/common';
 
 export interface ResearchReport {
   id: string;

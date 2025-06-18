@@ -1,8 +1,10 @@
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 import { aiTechnologyNews } from './news/aiTechnology';
 import { investmentNews } from './news/investment';
 import { applicationNews } from './news/application';
 import { papersNews } from './news/papers';
+import { marketNews } from './news/market';
+import { policyNews } from './news/policy';
 
 // 导入研究报告和画布数据
 import { mockResearchReports } from './researchReports';
@@ -16,7 +18,9 @@ export const mockNews: NewsItem[] = [
   ...aiTechnologyNews,
   ...investmentNews,
   ...applicationNews,
-  ...papersNews
+  ...papersNews,
+  ...marketNews,
+  ...policyNews
 ];
 
 // 按类别导出

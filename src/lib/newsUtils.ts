@@ -1,4 +1,4 @@
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 /**
  * 格式化时间为"X分钟前"、"X小时前"、"X天前"

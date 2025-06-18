@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Clock, TrendingUp, ArrowUpRight, Calendar, Timer } from 'lucide-react';
 import { formatTimeAgo, getImpactColor, getCategoryColor, getImpactText } from '@/lib/newsUtils';
-import type { NewsItem } from '@/pages/Index';
+import type { NewsItem } from '@/types/common';
 
 interface StackedNewsCardsProps {
   news: NewsItem[];

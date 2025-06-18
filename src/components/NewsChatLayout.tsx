@@ -4,7 +4,7 @@ import { ResponsiveStackedNews } from './ResponsiveStackedNews';
 import { ChatPanel } from './ChatPanel';
 import { ChatMessages } from './ChatMessages';
 import { NewsDetailModal } from './NewsDetailModal';
-import type { NewsItem, Message } from '@/pages/Index';
+import type { NewsItem, Message } from '@/types/common';
 import type { Task, TaskGroup } from '@/data/tasks';
 
 interface NewsChatLayoutProps {

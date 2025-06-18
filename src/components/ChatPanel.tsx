@@ -5,7 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Send, Sparkles, User, Bot, X } from 'lucide-react';
-import type { Message } from '@/pages/Index';
+import type { Message } from '@/types/common';
 
 interface ChatPanelProps {
   messages: Message[];
