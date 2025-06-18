@@ -1,35 +1,37 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { History } from 'lucide-react';
-import ResearchDocument from './ResearchDocument';
+import { HistoryDropdown } from './HistoryDropdown';
+import ResearchDocument from '@/components/ResearchDocument';
 import type { ReportBlock } from '@/pages/Index';
+
+interface HistoryItem {
+  id: string;
+  title: string;
+  date: Date;
+  type: 'report' | 'canvas';
+  data: ReportBlock[] | Record<string, unknown>;
+}
 
 interface ResearchPanelProps {
   report: ReportBlock[] | null;
   onDragToCanvas: (block: ReportBlock) => void;
-  onShowHistory?: () => void;
+  onHistorySelect?: (item: HistoryItem) => void;
+  hasToolbar?: boolean;
 }
 
 export const ResearchPanel: React.FC<ResearchPanelProps> = ({ 
   report, 
   onDragToCanvas,
-  onShowHistory
+  onHistorySelect,
+  hasToolbar = false
 }) => {  return (
     <div className="h-full w-full bg-background border-l border-r relative animate-in fade-in-0 slide-in-from-right-6 duration-500">
-      {/* 历史记录按钮 */}
-      {onShowHistory && (
-        <div className="absolute top-4 right-4 z-10 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-200">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={onShowHistory}
-            className="flex items-center gap-2 bg-background/80 backdrop-blur-sm"
-          >
-            <History className="w-4 h-4" />
-            历史记录
-          </Button>
-        </div>
-      )}
+      {/* 历史记录下拉菜单 - 常驻显示 */}
+      <div className={`absolute ${hasToolbar ? 'top-20' : 'top-4'} right-4 z-30 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-200`}>
+        <HistoryDropdown 
+          type="report"
+          onSelect={onHistorySelect}
+        />
+      </div>
       
       <ResearchDocument 
         report={report}

@@ -20,15 +20,19 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
   maxKeywords = 4
 }) => {  
   // 新闻分类逻辑
-  const categorizedNews = useMemo(() => categorizeNews(news), [news]);return (
-    <div className="space-y-6">
-      {/* AI总结 */}
-      <AISummary />
+  const categorizedNews = useMemo(() => categorizeNews(news), [news]);  return (
+    <div className="space-y-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">      {/* AI总结 */}
+      <div className="animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-200">
+        <AISummary 
+          selectedKeywords={selectedKeywords}
+          onKeywordToggle={onKeywordToggle}
+        />
+      </div>
       
       {/* 三列叠层卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 h-full">
         {/* AI公司投创 */}
-        <div className="flex flex-col">
+        <div className="flex flex-col animate-in fade-in-0 slide-in-from-left-4 duration-700 delay-300">
           <StackedNewsCards
             news={categorizedNews.investment}
             selectedKeywords={selectedKeywords}
@@ -41,7 +45,7 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
         </div>
 
         {/* AI技术突破 */}
-        <div className="flex flex-col">
+        <div className="flex flex-col animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-400">
           <StackedNewsCards
             news={categorizedNews.technology}
             selectedKeywords={selectedKeywords}
@@ -54,7 +58,7 @@ export const StackedNewsHome: React.FC<StackedNewsHomeProps> = ({
         </div>
 
         {/* AI应用论文 */}
-        <div className="flex flex-col md:col-span-2 lg:col-span-1">
+        <div className="flex flex-col md:col-span-2 lg:col-span-1 animate-in fade-in-0 slide-in-from-right-4 duration-700 delay-500">
           <StackedNewsCards
             news={categorizedNews.application}
             selectedKeywords={selectedKeywords}

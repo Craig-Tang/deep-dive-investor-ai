@@ -5,9 +5,15 @@ import { Sparkles, Calendar, TrendingUp } from 'lucide-react';
 
 interface AISummaryProps {
   className?: string;
+  onKeywordToggle?: (keyword: string) => void;
+  selectedKeywords?: string[];
 }
 
-export const AISummary: React.FC<AISummaryProps> = ({ className = "" }) => {
+export const AISummary: React.FC<AISummaryProps> = ({ 
+  className = "", 
+  onKeywordToggle, 
+  selectedKeywords = [] 
+}) => {
   const currentDate = new Date().toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -46,13 +52,21 @@ export const AISummary: React.FC<AISummaryProps> = ({ className = "" }) => {
       <CardContent className="pt-0">
         <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
           {summary}
-        </p>
-        <div className="flex flex-wrap gap-2 mt-4">
-          <Badge variant="outline" className="text-xs">OpenAI融资</Badge>
-          <Badge variant="outline" className="text-xs">Claude 4.0</Badge>
-          <Badge variant="outline" className="text-xs">红杉AI基金</Badge>
-          <Badge variant="outline" className="text-xs">算力短缺</Badge>
-          <Badge variant="outline" className="text-xs">欧盟AI法案</Badge>
+        </p>        <div className="flex flex-wrap gap-2 mt-4">
+          {['OpenAI融资', 'Claude 4.0', '红杉AI基金', '算力短缺', '欧盟AI法案'].map((keyword) => (
+            <Badge 
+              key={keyword}
+              variant={selectedKeywords.includes(keyword) ? "default" : "outline"} 
+              className={`text-xs cursor-pointer transition-all hover:scale-105 ${
+                selectedKeywords.includes(keyword) 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'hover:bg-primary/10 hover:text-primary hover:border-primary/30'
+              }`}
+              onClick={() => onKeywordToggle?.(keyword)}
+            >
+              {keyword}
+            </Badge>
+          ))}
         </div>
       </CardContent>
     </Card>

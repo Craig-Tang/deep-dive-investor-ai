@@ -24,12 +24,14 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
   title,
   maxKeywords = 4,
   className = ""
-}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+}) => {  const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(false);  const containerRef = useRef<HTMLDivElement>(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const [wheelDebounce, setWheelDebounce] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextCard = () => {
@@ -59,11 +61,19 @@ export const StackedNewsCards: React.FC<StackedNewsCardsProps> = ({
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [news.length]);  // 滚轮事件处理
   const handleWheel = (event: React.WheelEvent) => {
-    event.preventDefault();
-    if (event.deltaY > 0) {
-      setCurrentIndex((prev) => (prev + 1) % news.length);
-    } else {
-      setCurrentIndex((prev) => (prev - 1 + news.length) % news.length);
+    // 防抖处理，避免过于频繁的切换
+    if (wheelDebounce) return;
+    
+    // 移除 preventDefault() 以避免被动事件监听器警告
+    if (Math.abs(event.deltaY) > 10) { // 添加阈值避免过于敏感
+      setWheelDebounce(true);
+      setTimeout(() => setWheelDebounce(false), 200); // 200ms防抖
+      
+      if (event.deltaY > 0) {
+        setCurrentIndex((prev) => (prev + 1) % news.length);
+      } else {
+        setCurrentIndex((prev) => (prev - 1 + news.length) % news.length);
+      }
     }
   };
 

@@ -79,52 +79,41 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     <div className={`${
       mode === 'input-only' ? 'floating-input' : 
       'border-t bg-card/95 backdrop-blur-sm'
-    } p-4 space-y-3`}>
-      
-      {/* 选中的关键词显示 */}
+    } p-4 space-y-3`}>      {/* 选中的关键词显示 */}
       {selectedKeywords.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/50">
-          <span className="text-xs text-muted-foreground font-medium">已选关键词:</span>
-          {selectedKeywords.map((keyword) => (
-            <Badge 
+        <div className="flex flex-wrap items-center gap-1.5 text-sm animate-in fade-in-0 slide-in-from-top-2 duration-300">
+          <span className="text-muted-foreground">关键词:</span>
+          {selectedKeywords.map((keyword, index) => (
+            <span 
               key={keyword} 
-              variant="secondary" 
-              className="text-xs bg-primary/10 text-primary border-primary/20"
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium animate-in fade-in-0 zoom-in-95 duration-200"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               {keyword}
-            </Badge>
+            </span>
           ))}
           {onClearKeywords && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <button 
               onClick={onClearKeywords}
-              className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+              className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground transition-colors ml-1 hover:scale-110 duration-200"
             >
               <X className="w-3 h-3" />
-            </Button>
+            </button>
           )}
         </div>
-      )}
-
-      {/* 问题推荐 */}
+      )}{/* 问题推荐 */}
       {suggestedQuestions.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">推荐问题</span>
-          </div>
-          <div className="space-y-2">
-            {suggestedQuestions.map((question, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(question)}
-                className="w-full text-left p-3 text-sm bg-muted/30 hover:bg-muted/50 rounded-lg border border-border/30 hover:border-primary/30 transition-all duration-200"
-              >
-                {question}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-500">
+          {suggestedQuestions.map((question, index) => (
+            <button
+              key={index}
+              onClick={() => handleSuggestionClick(question)}
+              className="inline-flex items-center px-3 py-1.5 text-xs bg-muted/50 hover:bg-muted/70 text-muted-foreground hover:text-foreground rounded-full border border-border/50 hover:border-border transition-all duration-200 hover:scale-105 animate-in fade-in-0 slide-in-from-bottom-2"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              {question}
+            </button>
+          ))}
         </div>
       )}
 

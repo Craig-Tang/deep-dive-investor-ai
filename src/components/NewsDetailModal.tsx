@@ -54,7 +54,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                 影响力: {getImpactText(item.impact)}
               </Badge>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleShare}>
                 <Share2 className="w-4 h-4 mr-1" />
